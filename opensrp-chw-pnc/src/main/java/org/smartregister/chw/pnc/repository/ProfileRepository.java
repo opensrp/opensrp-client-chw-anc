@@ -46,7 +46,6 @@ public class ProfileRepository extends BaseRepository {
     }
 
 
-
     public List<CommonPersonObjectClient> getChildrenLessThan29DaysOld(String motherBaseEntityID) {
         List<CommonPersonObjectClient> childMemberObjects = new ArrayList<>();
 
@@ -102,6 +101,35 @@ public class ProfileRepository extends BaseRepository {
             }
         }
         return delivery_date;
+    }
+
+
+    public String getLastVisit(String motherBaseEntityID) {
+
+        SQLiteDatabase database = getReadableDatabase();
+
+        String lastVisitDate = null;
+
+        net.sqlcipher.Cursor cursor = null;
+
+        try {
+            if (database == null) {
+                return null;
+            }
+            cursor = database.rawQuery("SELECT visit_date FROM visits where  visit_type = ? AND base_entity_id = ?", new String[]{"PNC Home Visit",motherBaseEntityID});
+            if (cursor != null && cursor.getCount() > 0 && cursor.moveToFirst()) {
+                lastVisitDate = cursor.getString(cursor.getColumnIndex("visit_date"));
+            }
+        } catch (Exception e) {
+            Timber.e(e);
+
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+        return lastVisitDate;
+
     }
 
 }
