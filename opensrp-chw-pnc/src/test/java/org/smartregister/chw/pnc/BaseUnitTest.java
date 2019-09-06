@@ -11,5 +11,5 @@ import org.smartregister.immunization.BuildConfig;
 @RunWith(RobolectricTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = Build.VERSION_CODES.O_MR1)
 @PowerMockIgnore({"org.mockito.*", "org.robolectric.*", "android.*"})
-public class BaseUnitTest {
+public abstract class BaseUnitTest {
 }
