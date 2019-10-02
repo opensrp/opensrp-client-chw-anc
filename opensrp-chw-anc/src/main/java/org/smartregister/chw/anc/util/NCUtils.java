@@ -67,6 +67,7 @@ import java.util.Map;
 
 import timber.log.Timber;
 
+import static org.smartregister.chw.anc.util.DBConstants.KEY.DELIVERY_DATE;
 import static org.smartregister.chw.anc.util.JsonFormUtils.cleanString;
 import static org.smartregister.util.JsonFormUtils.VALUE;
 import static org.smartregister.util.JsonFormUtils.getFieldJSONObject;
@@ -77,8 +78,7 @@ public class NCUtils {
     public static final SimpleDateFormat dd_MMM_yyyy = new SimpleDateFormat("dd MMM yyyy");
     public static final SimpleDateFormat yyyy_mm_dd = new SimpleDateFormat("yyyy-mm-dd");
     private static String[] default_obs = {"start", "end", "deviceid", "subscriberid", "simserial", "phonenumber"};
-    private static String[] vaccines = {"bcg_date", "opv0_date"};
-    private static String VaccineName;
+    private static String[] vaccines = {"bcg_date", "opv0_date", "chk_opv_0", "chk_opv_0", "chk_bcg"};
 
     public static String firstCharacterUppercase(String str) {
         if (TextUtils.isEmpty(str)) return "";
@@ -466,19 +466,34 @@ public class NCUtils {
     }
 
     public static void saveVaccineEvents(JSONArray fields, String baseID) {
+        String bcg_vaccine_name = "bcg";
+        String opv_vaccine_name = "opv_0";
         for (int i = 0; i < vaccines.length; i++) {
-
             try {
-                String vaccineDate = getFieldJSONObject(fields, vaccines[i]).optString(VALUE);
+
                 SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
-                Date date = formatter.parse(vaccineDate);
+                String vaccineDate = null;
+                String VaccineName = null;
                 if (vaccines[i] == "bcg_date") {
-                    VaccineName = "bcg";
+                    VaccineName = bcg_vaccine_name;
+                    vaccineDate = getFieldJSONObject(fields, vaccines[i]).optString(VALUE);
                 } else if (vaccines[i] == "opv0_date") {
-                    VaccineName = "opv_0";
+                    VaccineName = opv_vaccine_name;
+                    vaccineDate = getFieldJSONObject(fields, vaccines[i]).optString(VALUE);
+                } else if (vaccines[i] == "chk_opv_0") {
+                    if (getFieldJSONObject(fields, vaccines[i]).optBoolean(VALUE)) {
+                        VaccineName = opv_vaccine_name;
+                        vaccineDate = getFieldJSONObject(fields, DELIVERY_DATE).optString(VALUE);
+                    }
+                } else if (vaccines[i] == "chk_bcg") {
+                    if (getFieldJSONObject(fields, vaccines[i]).optBoolean(VALUE)) {
+                        VaccineName = bcg_vaccine_name;
+                        vaccineDate = getFieldJSONObject(fields, DELIVERY_DATE).optString(VALUE);
+                    }
                 }
-                if (VaccineName != null) {
-                    VisitUtils.savePncChildVaccines(VaccineName, baseID, date);
+
+                if (VaccineName != null && vaccineDate != null) {
+                    VisitUtils.savePncChildVaccines(VaccineName, baseID, formatter.parse(vaccineDate));
                 }
             } catch (ParseException e) {
                 Timber.e(e.toString());
