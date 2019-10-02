@@ -78,7 +78,7 @@ public class NCUtils {
     public static final SimpleDateFormat dd_MMM_yyyy = new SimpleDateFormat("dd MMM yyyy");
     public static final SimpleDateFormat yyyy_mm_dd = new SimpleDateFormat("yyyy-mm-dd");
     private static String[] default_obs = {"start", "end", "deviceid", "subscriberid", "simserial", "phonenumber"};
-    private static String[] vaccines = {"bcg_date", "opv0_date", "chk_opv_0", "chk_opv_0", "chk_bcg"};
+    private static String[] vaccines = {"bcg_date", "opv0_date", "chk_opv_0", "chk_bcg"};
 
     public static String firstCharacterUppercase(String str) {
         if (TextUtils.isEmpty(str)) return "";
@@ -470,25 +470,34 @@ public class NCUtils {
         String opv_vaccine_name = "opv_0";
         for (int i = 0; i < vaccines.length; i++) {
             try {
-
                 SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
                 String vaccineDate = null;
                 String VaccineName = null;
+                JSONObject vaccineDateObject;
                 if (vaccines[i] == "bcg_date") {
                     VaccineName = bcg_vaccine_name;
-                    vaccineDate = getFieldJSONObject(fields, vaccines[i]).optString(VALUE);
+                    vaccineDateObject = getFieldJSONObject(fields, vaccines[i]);
+                    vaccineDate = vaccineDateObject != null ? vaccineDateObject.optString(VALUE) : null;
                 } else if (vaccines[i] == "opv0_date") {
                     VaccineName = opv_vaccine_name;
-                    vaccineDate = getFieldJSONObject(fields, vaccines[i]).optString(VALUE);
+                    vaccineDateObject = getFieldJSONObject(fields, vaccines[i]);
+                    vaccineDate = vaccineDateObject != null ? vaccineDateObject.optString(VALUE) : null;
                 } else if (vaccines[i] == "chk_opv_0") {
-                    if (getFieldJSONObject(fields, vaccines[i]).optBoolean(VALUE)) {
+                    vaccineDateObject = getFieldJSONObject(fields, vaccines[i]);
+                    Boolean checked = vaccineDateObject != null ? vaccineDateObject.optBoolean(VALUE) : false;
+                    if (checked) {
                         VaccineName = opv_vaccine_name;
-                        vaccineDate = getFieldJSONObject(fields, DELIVERY_DATE).optString(VALUE);
+                        vaccineDateObject = getFieldJSONObject(fields, DELIVERY_DATE);
+                        vaccineDate = vaccineDateObject != null ? vaccineDateObject.optString(VALUE) : null;
+
                     }
                 } else if (vaccines[i] == "chk_bcg") {
-                    if (getFieldJSONObject(fields, vaccines[i]).optBoolean(VALUE)) {
+                    vaccineDateObject = getFieldJSONObject(fields, vaccines[i]);
+                    Boolean checked = vaccineDateObject != null ? vaccineDateObject.optBoolean(VALUE) : false;
+                    if (checked) {
                         VaccineName = bcg_vaccine_name;
-                        vaccineDate = getFieldJSONObject(fields, DELIVERY_DATE).optString(VALUE);
+                        vaccineDateObject = getFieldJSONObject(fields, DELIVERY_DATE);
+                        vaccineDate = vaccineDateObject != null ? vaccineDateObject.optString(VALUE) : null;
                     }
                 }
 
@@ -502,7 +511,8 @@ public class NCUtils {
     }
 
     @Nullable
-    public static JSONObject getVisitJSONFromWrapper(String entityID, Map<VaccineWrapper, String> vaccineWrapperDateMap) {
+    public static JSONObject getVisitJSONFromWrapper(String
+                                                             entityID, Map<VaccineWrapper, String> vaccineWrapperDateMap) {
 
         try {
             JSONObject jsonObject = JsonFormUtils.getFormAsJson(Constants.FORMS.IMMUNIZATIOIN_VISIT);
@@ -530,7 +540,8 @@ public class NCUtils {
     }
 
     @Nullable
-    public static JSONObject getVisitJSONFromVisitDetails(String entityID, Map<String, List<VisitDetail>> detailsMap, List<VaccineDisplay> vaccineDisplays) {
+    public static JSONObject getVisitJSONFromVisitDetails(String
+                                                                  entityID, Map<String, List<VisitDetail>> detailsMap, List<VaccineDisplay> vaccineDisplays) {
         try {
             JSONObject jsonObject = JsonFormUtils.getFormAsJson(Constants.FORMS.IMMUNIZATIOIN_VISIT);
             jsonObject.put("entity_id", entityID);
