@@ -469,11 +469,10 @@ public class NCUtils {
         String bcg_vaccine_name = "bcg";
         String opv_vaccine_name = "opv_0";
         for (int i = 0; i < vaccines.length; i++) {
-            String vaccineDate;
-            String VaccineName = null;
-            JSONObject vaccineDateObject;
+            JSONObject vaccineDateObject = getFieldJSONObject(fields, vaccines[i]);
+            String vaccineDate = vaccineDateObject != null ? vaccineDateObject.optString(VALUE) : null;
+
             if (vaccines[i] == "vacc_birth") {
-                vaccineDateObject = getFieldJSONObject(fields, vaccines[i]);
                 JSONArray vaccines = vaccineDateObject.optJSONArray(VALUE);
                 if (vaccines != null && vaccines.length() > 0) {
                     vaccineDateObject = getFieldJSONObject(fields, DELIVERY_DATE);
@@ -481,25 +480,17 @@ public class NCUtils {
 
                     for (int j = 0; j < vaccines.length(); j++) {
                         if ("chk_opv_0".equals(vaccines.optString(j))) {
-                            VaccineName = opv_vaccine_name;
+                            saveVaccine(opv_vaccine_name, vaccineDate, baseID);
                         } else if ("chk_bcg".equals(vaccines.optString(j))) {
-                            VaccineName = bcg_vaccine_name;
+                            saveVaccine(bcg_vaccine_name, vaccineDate, baseID);
                         }
-                        saveVaccine(VaccineName, vaccineDate, baseID);
                     }
                 }
                 return;
-            } else if (vaccines[i] == "bcg_date") {
-                VaccineName = bcg_vaccine_name;
-                vaccineDateObject = getFieldJSONObject(fields, vaccines[i]);
-                vaccineDate = vaccineDateObject != null ? vaccineDateObject.optString(VALUE) : null;
-                saveVaccine(VaccineName, vaccineDate, baseID);
-
-            } else if (vaccines[i] == "opv0_date") {
-                VaccineName = opv_vaccine_name;
-                vaccineDateObject = getFieldJSONObject(fields, vaccines[i]);
-                vaccineDate = vaccineDateObject != null ? vaccineDateObject.optString(VALUE) : null;
-                saveVaccine(VaccineName, vaccineDate, baseID);
+            } else if (vaccines[i].equals("bcg_date")) {
+                saveVaccine(bcg_vaccine_name, vaccineDate, baseID);
+            } else if (vaccines[i].equals("opv0_date")) {
+                saveVaccine(opv_vaccine_name, vaccineDate, baseID);
             }
         }
     }
