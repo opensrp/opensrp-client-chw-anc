@@ -475,7 +475,6 @@ public class NCUtils {
             if (vaccines[i] == "vacc_birth") {
                 vaccineDateObject = getFieldJSONObject(fields, vaccines[i]);
                 JSONArray vaccines = vaccineDateObject.optJSONArray(VALUE);
-
                 if (vaccines != null && vaccines.length() > 0) {
                     vaccineDateObject = getFieldJSONObject(fields, DELIVERY_DATE);
                     vaccineDate = vaccineDateObject != null ? vaccineDateObject.optString(VALUE) : null;
