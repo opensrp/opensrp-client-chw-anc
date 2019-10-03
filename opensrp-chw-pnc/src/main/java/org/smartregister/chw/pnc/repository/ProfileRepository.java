@@ -23,9 +23,6 @@ import static org.smartregister.chw.anc.util.DBConstants.KEY.DELIVERY_DATE;
 
 public class ProfileRepository extends BaseRepository {
 
-
-    private static final String MOHTER_ENTITY_ID = "mother_entity_id";
-
     public ProfileRepository(Repository repository) {
         super(repository);
     }
@@ -46,7 +43,6 @@ public class ProfileRepository extends BaseRepository {
 
     }
 
-
     public List<CommonPersonObjectClient> getChildrenLessThan29DaysOld(String motherBaseEntityID) {
         List<CommonPersonObjectClient> childMemberObjects = new ArrayList<>();
 
@@ -56,7 +52,7 @@ public class ProfileRepository extends BaseRepository {
             if (database == null) {
                 return null;
             }
-            cursor = database.rawQuery("SELECT * fROM " + Constants.TABLES.EC_CHILD + " WHERE " + MOHTER_ENTITY_ID + "=?",
+            cursor = database.rawQuery("SELECT * fROM " + Constants.TABLES.EC_CHILD + " WHERE mother_entity_id=?",
                     new String[]{motherBaseEntityID});
             if (cursor != null && cursor.getCount() > 0 && cursor.moveToFirst()) {
                 while (!cursor.isAfterLast()) {
@@ -116,7 +112,7 @@ public class ProfileRepository extends BaseRepository {
             if (database == null) {
                 return null;
             }
-            cursor = database.rawQuery("SELECT visit_date FROM visits where  visit_type = ? AND base_entity_id = ?", new String[]{"PNC Home Visit",motherBaseEntityID});
+            cursor = database.rawQuery("SELECT visit_date FROM visits where  visit_type = ? AND base_entity_id = ?", new String[]{"PNC Home Visit", motherBaseEntityID});
             if (cursor != null && cursor.getCount() > 0 && cursor.moveToFirst()) {
                 lastVisitDate = cursor.getLong(cursor.getColumnIndex("visit_date"));
             }
