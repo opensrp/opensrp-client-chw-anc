@@ -511,7 +511,7 @@ public class NCUtils {
             try {
                 VisitUtils.savePncChildVaccines(VaccineName, baseID, formatter.parse(vaccineDate));
             } catch (ParseException e) {
-                e.printStackTrace();
+                Timber.e(e);
             }
         }
     }
