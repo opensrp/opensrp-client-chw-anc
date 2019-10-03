@@ -78,7 +78,7 @@ public class NCUtils {
     public static final SimpleDateFormat dd_MMM_yyyy = new SimpleDateFormat("dd MMM yyyy");
     public static final SimpleDateFormat yyyy_mm_dd = new SimpleDateFormat("yyyy-mm-dd");
     private static String[] default_obs = {"start", "end", "deviceid", "subscriberid", "simserial", "phonenumber"};
-    private static String[] vaccines = {"bcg_date", "opv0_date", "chk_opv_0", "chk_bcg"};
+    private static String[] vaccines = {"bcg_date", "opv0_date", "vacc_birth"};
 
     public static String firstCharacterUppercase(String str) {
         if (TextUtils.isEmpty(str)) return "";
@@ -469,43 +469,49 @@ public class NCUtils {
         String bcg_vaccine_name = "bcg";
         String opv_vaccine_name = "opv_0";
         for (int i = 0; i < vaccines.length; i++) {
+            String vaccineDate;
+            String VaccineName = null;
+            JSONObject vaccineDateObject;
+            if (vaccines[i] == "vacc_birth") {
+                vaccineDateObject = getFieldJSONObject(fields, vaccines[i]);
+                JSONArray vaccines = vaccineDateObject.optJSONArray(VALUE);
+
+                if (vaccines != null && vaccines.length() > 0) {
+                    vaccineDateObject = getFieldJSONObject(fields, DELIVERY_DATE);
+                    vaccineDate = vaccineDateObject != null ? vaccineDateObject.optString(VALUE) : null;
+
+                    for (int j = 0; j < vaccines.length(); j++) {
+                        if ("chk_opv_0".equals(vaccines.optString(j))) {
+                            VaccineName = opv_vaccine_name;
+                        } else if ("chk_bcg".equals(vaccines.optString(j))) {
+                            VaccineName = bcg_vaccine_name;
+                        }
+                        saveVaccine(VaccineName, vaccineDate, baseID);
+                    }
+                }
+                return;
+            } else if (vaccines[i] == "bcg_date") {
+                VaccineName = bcg_vaccine_name;
+                vaccineDateObject = getFieldJSONObject(fields, vaccines[i]);
+                vaccineDate = vaccineDateObject != null ? vaccineDateObject.optString(VALUE) : null;
+                saveVaccine(VaccineName, vaccineDate, baseID);
+
+            } else if (vaccines[i] == "opv0_date") {
+                VaccineName = opv_vaccine_name;
+                vaccineDateObject = getFieldJSONObject(fields, vaccines[i]);
+                vaccineDate = vaccineDateObject != null ? vaccineDateObject.optString(VALUE) : null;
+                saveVaccine(VaccineName, vaccineDate, baseID);
+            }
+        }
+    }
+
+    private static void saveVaccine(String VaccineName, String vaccineDate, String baseID) {
+        if (VaccineName != null && vaccineDate != null) {
+            SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
             try {
-                SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
-                String vaccineDate = null;
-                String VaccineName = null;
-                JSONObject vaccineDateObject;
-                if (vaccines[i] == "bcg_date") {
-                    VaccineName = bcg_vaccine_name;
-                    vaccineDateObject = getFieldJSONObject(fields, vaccines[i]);
-                    vaccineDate = vaccineDateObject != null ? vaccineDateObject.optString(VALUE) : null;
-                } else if (vaccines[i] == "opv0_date") {
-                    VaccineName = opv_vaccine_name;
-                    vaccineDateObject = getFieldJSONObject(fields, vaccines[i]);
-                    vaccineDate = vaccineDateObject != null ? vaccineDateObject.optString(VALUE) : null;
-                } else if (vaccines[i] == "chk_opv_0") {
-                    vaccineDateObject = getFieldJSONObject(fields, vaccines[i]);
-                    Boolean checked = vaccineDateObject != null ? vaccineDateObject.optBoolean(VALUE) : false;
-                    if (checked) {
-                        VaccineName = opv_vaccine_name;
-                        vaccineDateObject = getFieldJSONObject(fields, DELIVERY_DATE);
-                        vaccineDate = vaccineDateObject != null ? vaccineDateObject.optString(VALUE) : null;
-
-                    }
-                } else if (vaccines[i] == "chk_bcg") {
-                    vaccineDateObject = getFieldJSONObject(fields, vaccines[i]);
-                    Boolean checked = vaccineDateObject != null ? vaccineDateObject.optBoolean(VALUE) : false;
-                    if (checked) {
-                        VaccineName = bcg_vaccine_name;
-                        vaccineDateObject = getFieldJSONObject(fields, DELIVERY_DATE);
-                        vaccineDate = vaccineDateObject != null ? vaccineDateObject.optString(VALUE) : null;
-                    }
-                }
-
-                if (VaccineName != null && vaccineDate != null) {
-                    VisitUtils.savePncChildVaccines(VaccineName, baseID, formatter.parse(vaccineDate));
-                }
+                VisitUtils.savePncChildVaccines(VaccineName, baseID, formatter.parse(vaccineDate));
             } catch (ParseException e) {
-                Timber.e(e.toString());
+                e.printStackTrace();
             }
         }
     }
