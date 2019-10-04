@@ -32,7 +32,10 @@ public class DBConstants {
         public static final String HAS_ANC_CARD = "has_anc_card";
         public static final String MOTHER_ENTITY_ID = "mother_entity_id";
         public static final String DELIVERY_DATE = "delivery_date";
-
-
+        public static final String PREGNANCY_OUTCOME = "pregnancy_outcome";
+        public static final String MISCARRIAGE_DATE = "miscarriage_date";
+        public static final String DELIVERY_PLACE = "delivery_place";
+        public static final String LAST_VISIT_DATE = "last_visit_date";
+        public static final String NEXT_VISIT_DATE = "next_visit_date";
     }
 }
