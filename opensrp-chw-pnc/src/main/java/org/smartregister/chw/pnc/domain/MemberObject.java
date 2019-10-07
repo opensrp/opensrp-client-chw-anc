@@ -6,12 +6,12 @@ import org.smartregister.util.Utils;
 
 @SuppressWarnings("serial")
 public class MemberObject extends org.smartregister.chw.anc.domain.MemberObject {
-    protected String pregnancyOutcome;
-    protected String miscarriageDate;
-    protected String deliveryDate;
-    protected String deliveryPlace;
-    protected String lastVisitDate;
-    protected String nextVisitDate;
+    public String pregnancyOutcome;
+    public String miscarriageDate;
+    public String deliveryDate;
+    public String deliveryPlace;
+    public String lastVisitDate;
+    public String nextVisitDate;
 
     public MemberObject() {
 
