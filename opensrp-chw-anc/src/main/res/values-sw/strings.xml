@@ -38,6 +38,7 @@
     <string name="edit">HARIRI</string>
 
     <string name="unique_id_text">ID: %1$s</string>
+    <string name="gravida_text">Ujauzito %1$s</string>
 
     <string name="confirm_form_close">Thibitisha kufunga fomu</string>
     <string name="confirm_form_close_explanation">Unauwakika unataka kurudi nyuma?Data zote ulizoingiza kwenye fomu zitafutika</string>
@@ -114,4 +115,13 @@
     <string name="rubella_2">Rubella 2</string>
     <string name="mena">Homa ya uti wa mgongo</string>
 
+
+    <!-- Emergency Transport-->
+    <string name="family_location">Angalia eneo la nyumba</string>
+    <string name="default_pregnancy_risk_text">Risk default</string>
+    <string name="low_pregnancy_risk">Hatari kidogo</string>
+    <string name="medium_pregnancy_risk">Hatari ya kawaida</string>
+    <string name="high_pregnancy_risk">Hatari sana</string>
+    <string name="call_community_responder">Pigia usafiri wa dharura</string>
+    <string name="community_responder">Usafiri wa dharura</string>
 </resources>
