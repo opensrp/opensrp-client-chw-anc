@@ -26,7 +26,7 @@ public class BaseAncRegisterPresenter implements BaseAncRegisterContract.Present
     }
 
     @Override
-    public void startForm(String formName, String entityId, String metadata, String currentLocationId) throws Exception {
+    public void startForm(String formName, String entityId, String metadata, String currentLocationId) {
         if (StringUtils.isBlank(entityId)) {
             return;
         }
@@ -34,7 +34,12 @@ public class BaseAncRegisterPresenter implements BaseAncRegisterContract.Present
         BaseAncRegisterContract.View view = getView();
         if (view == null) return;
 
-        JSONObject form = model.getFormAsJson(view.getContext(), formName, entityId, currentLocationId);
+        JSONObject form = null;
+        try {
+            form = model.getFormAsJson(view.getContext(), formName, entityId, currentLocationId);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         view.startFormActivity(form);
     }
 
