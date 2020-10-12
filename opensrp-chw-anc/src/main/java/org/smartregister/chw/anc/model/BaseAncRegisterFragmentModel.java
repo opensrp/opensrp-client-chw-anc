@@ -14,6 +14,7 @@ import org.smartregister.domain.Response;
 import org.smartregister.domain.ResponseStatus;
 import org.smartregister.view.contract.IField;
 import org.smartregister.view.contract.IView;
+import org.smartregister.view.contract.IViewConfiguration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +30,7 @@ public class BaseAncRegisterFragmentModel implements BaseAncRegisterFragmentCont
     }
 
     @Override
-    public ViewConfiguration getViewConfiguration(String viewConfigurationIdentifier) {
+    public IViewConfiguration getViewConfiguration(String viewConfigurationIdentifier) {
         return ConfigurableViewsLibrary.getInstance().getConfigurableViewsHelper().getViewConfiguration(viewConfigurationIdentifier);
     }
 

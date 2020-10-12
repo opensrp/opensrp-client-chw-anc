@@ -37,13 +37,5 @@ public interface BaseAncRegisterFragmentContract {
 
         RegisterConfiguration defaultRegisterConfiguration();
 
-        ViewConfiguration getViewConfiguration(String viewConfigurationIdentifier);
-
-        String countSelect(String tableName, String mainCondition);
-
-        String mainSelect(String tableName, String mainCondition);
-
-        JSONArray getJsonArray(Response<String> response);
-
     }
 }
