@@ -10,7 +10,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.smartregister.chw.anc.AncLibrary;
 import org.smartregister.chw.anc.domain.VisitDetail;
+import org.smartregister.clientandeventmodel.Client;
 import org.smartregister.clientandeventmodel.Event;
+import org.smartregister.clientandeventmodel.EventClient;
 import org.smartregister.domain.tag.FormTag;
 import org.smartregister.immunization.domain.ServiceRecord;
 import org.smartregister.immunization.domain.Vaccine;
@@ -136,6 +138,30 @@ public class JsonFormUtils extends org.smartregister.util.JsonFormUtils {
         String entityId = getString(jsonForm, ENTITY_ID);
 
         return org.smartregister.util.JsonFormUtils.createEvent(fields, getJSONObject(jsonForm, METADATA), formTag(allSharedPreferences), entityId, getString(jsonForm, ENCOUNTER_TYPE), table);
+    }
+
+    public static EventClient processRegistrationForm(AllSharedPreferences allSharedPreferences, String jsonString, String table) {
+        try {
+            Triple<Boolean, JSONObject, JSONArray> registrationFormParams = validateParameters(jsonString);
+            if (!registrationFormParams.getLeft()) {
+                return null;
+            }
+
+            JSONObject jsonForm = registrationFormParams.getMiddle();
+            JSONArray fields = registrationFormParams.getRight();
+            String entityId = getString(jsonForm, ENTITY_ID);
+
+            Client baseClient = org.smartregister.util.JsonFormUtils.createBaseClient(fields, formTag(allSharedPreferences), entityId);
+            Event baseEvent = org.smartregister.util.JsonFormUtils.createEvent(fields,
+                    getJSONObject(jsonForm, METADATA), formTag(allSharedPreferences),
+                    entityId, getString(jsonForm, ENCOUNTER_TYPE), table);
+            tagEvent(allSharedPreferences, baseEvent);
+            return new EventClient(baseEvent, baseClient);
+
+        } catch (Exception ex) {
+            Timber.e(ex);
+            return null;
+        }
     }
 
     public static FormTag formTag(AllSharedPreferences allSharedPreferences) {
