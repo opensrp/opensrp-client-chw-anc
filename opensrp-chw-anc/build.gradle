@@ -88,7 +88,7 @@ allprojects {
 }
 
 dependencies {
-    implementation('org.smartregister:opensrp-client-core:3.1.0-GS-PREVIEW-SNAPSHOT@aar') {
+    implementation('org.smartregister:opensrp-client-core:3.1.0.3-GS-PREVIEW-SNAPSHOT@aar') {
         transitive = true
         exclude group: 'com.github.bmelnychuk', module: 'atv'
         exclude group: 'com.google.guava', module: 'guava'
@@ -180,5 +180,4 @@ task jacocoTestReport(type: JacocoReport, dependsOn: ['testDebugUnitTest', 'crea
 coveralls {
     jacocoReportPath = "${buildDir}/reports/jacoco/jacocoRootReport/merged.xml"
 }
-
-// apply from: '../maven.gradle'
+apply from: '../maven.gradle'

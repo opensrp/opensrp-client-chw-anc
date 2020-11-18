@@ -150,6 +150,9 @@ public class JsonFormUtils extends org.smartregister.util.JsonFormUtils {
             JSONObject jsonForm = registrationFormParams.getMiddle();
             JSONArray fields = registrationFormParams.getRight();
             String entityId = getString(jsonForm, ENTITY_ID);
+            if (StringUtils.isBlank(entityId)) {
+                entityId = generateRandomUUIDString();
+            }
 
             Client baseClient = org.smartregister.util.JsonFormUtils.createBaseClient(fields, formTag(allSharedPreferences), entityId);
             Event baseEvent = org.smartregister.util.JsonFormUtils.createEvent(fields,
