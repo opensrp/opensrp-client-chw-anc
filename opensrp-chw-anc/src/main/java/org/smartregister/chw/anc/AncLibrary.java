@@ -7,6 +7,7 @@ import org.smartregister.repository.Repository;
 import org.smartregister.repository.UniqueIdRepository;
 import org.smartregister.sync.ClientProcessorForJava;
 import org.smartregister.sync.helper.ECSyncHelper;
+import org.smartregister.view.activity.DrishtiApplication;
 
 import id.zelory.compressor.Compressor;
 
@@ -111,10 +112,7 @@ public class AncLibrary {
     }
 
     public ClientProcessorForJava getClientProcessorForJava() {
-        if (clientProcessorForJava == null) {
-            clientProcessorForJava = ClientProcessorForJava.getInstance(context().applicationContext());
-        }
-        return clientProcessorForJava;
+        return DrishtiApplication.getInstance().getClientProcessor();
     }
 
     public void setClientProcessorForJava(ClientProcessorForJava clientProcessorForJava) {
