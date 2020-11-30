@@ -29,6 +29,6 @@ jobs:
     - name: Run ANC unit tests with Gradle
       run: ./gradlew :opensrp-chw-anc:clean :opensrp-chw-anc:jacocoTestReport  --stacktrace
     - name: Upload coverage to Coveralls with Gradle
-      run: ./gradlew :opensrp-chw-anc:coveralls --stacktrace
+      run: ./gradlew :opensrp-chw-anc:coveralls  :opensrp-chw-pnc:coveralls --stacktrace
       env:
         COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_TOKEN }}
