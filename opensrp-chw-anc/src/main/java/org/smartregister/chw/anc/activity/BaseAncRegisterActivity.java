@@ -29,6 +29,7 @@ import org.smartregister.view.fragment.BaseRegisterFragment;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import timber.log.Timber;
 
@@ -52,13 +53,13 @@ public class BaseAncRegisterActivity extends BaseRegisterActivity implements Bas
      */
     protected void onStartActivityWithAction() {
         if (ACTION != null && ACTION.equals(Constants.ACTIVITY_PAYLOAD_TYPE.REGISTRATION)) {
-            startFormActivity(getRegistrationForm(), BASE_ENTITY_ID, null);
+            startFormActivity(getRegistrationForm(), BASE_ENTITY_ID, (String)null);
         }
     }
 
     @Override
     public void startRegistration() {
-        startFormActivity(getRegistrationForm(), null, null);
+        startFormActivity(getRegistrationForm(), null, (String)null);
     }
 
     public String getRegistrationForm() {
@@ -187,6 +188,11 @@ public class BaseAncRegisterActivity extends BaseRegisterActivity implements Bas
     @Override
     protected Fragment[] getOtherFragments() {
         return new Fragment[0];
+    }
+
+    @Override
+    public void startFormActivity(String s, String s1, Map<String, String> map) {
+        // do nothing
     }
 
     @Override
