@@ -34,8 +34,6 @@ public class SampleDefaultApplication extends DrishtiApplication {
         //Auto login by default
         String password = "pwd";
         context.session().start(context.session().lengthInMilliseconds());
-        context.configuration().getDrishtiApplication().setPassword(password);
-        context.session().setPassword(password);
 
     }
 
