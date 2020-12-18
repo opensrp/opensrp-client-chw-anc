@@ -38,6 +38,7 @@ public class JsonFormUtils extends org.smartregister.util.JsonFormUtils {
     public static final String IMAGE = "image";
     public static final String HOME_VISIT_GROUP = "home_visit_group";
     private static final String V_REQUIRED = "v_required";
+    private static final String LAST_NAME = "last_name";
 
     protected static Triple<Boolean, JSONObject, JSONArray> validateParameters(String jsonString) {
 
@@ -155,6 +156,9 @@ public class JsonFormUtils extends org.smartregister.util.JsonFormUtils {
             }
 
             Client baseClient = org.smartregister.util.JsonFormUtils.createBaseClient(fields, formTag(allSharedPreferences), entityId);
+            JSONObject lastNameObject = org.smartregister.util.JsonFormUtils.getFieldJSONObject(fields, LAST_NAME);
+            String lastName = (lastNameObject != null) ? lastNameObject.optString(VALUE) : "";
+            baseClient.setLastName(lastName);
             Event baseEvent = org.smartregister.util.JsonFormUtils.createEvent(fields,
                     getJSONObject(jsonForm, METADATA), formTag(allSharedPreferences),
                     entityId, getString(jsonForm, ENCOUNTER_TYPE), table);
