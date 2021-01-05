@@ -30,6 +30,7 @@ public interface Constants {
         String PREGNANCY_OUTCOME = "Pregnancy Outcome";
         String CHILD_REGISTRATION = "Child Registration";
         String DELETE_EVENT = "Delete Event";
+        String VOID_EVENT = "Void Event";
     }
 
     interface FORMS {
