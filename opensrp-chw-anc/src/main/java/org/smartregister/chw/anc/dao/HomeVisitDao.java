@@ -67,7 +67,8 @@ public class HomeVisitDao extends AbstractDao {
                     cursor.getString(cursor.getColumnIndex("event_id")),
                     cursor.getString(cursor.getColumnIndex("formSubmissionId")),
                     cursor.getInt(cursor.getColumnIndex("out_of_area")),
-                    createdAt
+                    createdAt,
+                    cursor.getInt(cursor.getColumnIndex("is_voided"))
             );
         };
 
