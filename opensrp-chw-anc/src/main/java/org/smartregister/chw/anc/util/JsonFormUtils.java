@@ -28,7 +28,6 @@ import timber.log.Timber;
 
 import static org.smartregister.chw.anc.util.Constants.ENCOUNTER_TYPE;
 import static org.smartregister.chw.anc.util.DBConstants.KEY.DOB;
-import static org.smartregister.chw.anc.util.DBConstants.KEY.LAST_NAME;
 import static org.smartregister.chw.anc.util.DBConstants.KEY.MOTHER_ENTITY_ID;
 import static org.smartregister.chw.anc.util.DBConstants.KEY.RELATIONAL_ID;
 import static org.smartregister.chw.anc.util.DBConstants.KEY.UNIQUE_ID;
@@ -155,7 +154,8 @@ public class JsonFormUtils extends org.smartregister.util.JsonFormUtils {
                 entityId = generateRandomUUIDString();
             }
 
-            Client baseClient = org.smartregister.util.JsonFormUtils.createBaseClient(fields, formTag(allSharedPreferences), entityId);
+            Client originalClient = retrieveOriginalClient(entityId);
+            Client baseClient = org.smartregister.util.JsonFormUtils.createBaseClient(originalClient, fields, formTag(allSharedPreferences), entityId);
             JSONObject lastNameObject = org.smartregister.util.JsonFormUtils.getFieldJSONObject(fields, LAST_NAME);
             String lastName = (lastNameObject != null) ? lastNameObject.optString(VALUE) : "";
             baseClient.setLastName(lastName);
@@ -169,6 +169,11 @@ public class JsonFormUtils extends org.smartregister.util.JsonFormUtils {
             Timber.e(ex);
             return null;
         }
+    }
+
+    public static Client retrieveOriginalClient(String baseEntityId) {
+        JSONObject originalClientJsonObject = AncLibrary.getInstance().getEcSyncHelper().getClient(baseEntityId);
+        return org.smartregister.util.JsonFormUtils.gson.fromJson(originalClientJsonObject.toString(), Client.class);
     }
 
     public static FormTag formTag(AllSharedPreferences allSharedPreferences) {
