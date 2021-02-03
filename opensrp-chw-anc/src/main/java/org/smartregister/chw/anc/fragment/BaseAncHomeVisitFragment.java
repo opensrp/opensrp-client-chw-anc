@@ -3,7 +3,9 @@ package org.smartregister.chw.anc.fragment;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.os.Bundle;
+
 import androidx.annotation.DrawableRes;
+
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -46,6 +48,7 @@ import java.util.Map;
 
 import timber.log.Timber;
 
+import static com.vijay.jsonwizard.utils.NativeFormLangUtils.getTranslatedString;
 import static org.smartregister.util.JsonFormUtils.fields;
 
 public class BaseAncHomeVisitFragment extends BaseHomeVisitFragment implements View.OnClickListener, BaseAncHomeVisitFragmentContract.View {
@@ -77,11 +80,12 @@ public class BaseAncHomeVisitFragment extends BaseHomeVisitFragment implements V
     private List<JSONObject> optionList = new ArrayList<>();
     private Map<String, String> dateConstraints = new HashMap<>();
 
-    public static BaseAncHomeVisitFragment getInstance(final BaseAncHomeVisitContract.VisitView view, String form_name, JSONObject json, Map<String, List<VisitDetail>> details, String count) {
+    public static BaseAncHomeVisitFragment getInstance(Context context, final BaseAncHomeVisitContract.VisitView view, String form_name, JSONObject json, Map<String, List<VisitDetail>> details, String count) {
         JSONObject jsonObject = json;
         if (StringUtils.isNotBlank(form_name) && json == null) {
             try {
-                jsonObject = FormUtils.getInstance(view.getMyContext()).getFormJson(form_name);
+                String jsonForm = FormUtils.getInstance(view.getMyContext()).getFormJson(form_name).toString();
+                jsonObject = new JSONObject(getTranslatedString(jsonForm, context));
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -331,7 +335,7 @@ public class BaseAncHomeVisitFragment extends BaseHomeVisitFragment implements V
     }
 
     protected void onShowInfo() {
-        if(getView() == null)
+        if (getView() == null)
             return;
 
         AlertDialog.Builder builderSingle = new AlertDialog.Builder(getView().getContext(), com.vijay.jsonwizard.R.style.AppThemeAlertDialog);
@@ -513,7 +517,7 @@ public class BaseAncHomeVisitFragment extends BaseHomeVisitFragment implements V
     }
 
     @Override
-    public void onClose(){
+    public void onClose() {
         try {
             if (getActivity() != null && getActivity().getSupportFragmentManager() != null)
                 getActivity().getSupportFragmentManager().beginTransaction().remove(this).commit();
