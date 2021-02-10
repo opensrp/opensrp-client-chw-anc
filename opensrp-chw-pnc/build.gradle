@@ -6,8 +6,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath "com.android.tools.build:gradle:4.0.0"
-        classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:2.8.3'
+        classpath "com.android.tools.build:gradle:4.0.2"
     }
 }
 
@@ -88,7 +87,7 @@ allprojects {
 }
 
 dependencies {
-    implementation('org.smartregister:opensrp-client-core:3.1.0.11-GS-PREVIEW-SNAPSHOT@aar') {
+    implementation('org.smartregister:opensrp-client-core:4.0.4-SNAPSHOT@aar') {
         transitive = true
         exclude group: 'com.github.bmelnychuk', module: 'atv'
         exclude group: 'com.google.guava', module: 'guava'
@@ -99,7 +98,7 @@ dependencies {
 
     compileOnly 'com.ibm.fhir:fhir-model:4.2.3'
 
-    implementation('org.smartregister:opensrp-client-native-form:1.14.5.0-SNAPSHOT@aar') {
+    implementation('org.smartregister:opensrp-client-native-form:1.14.6.1-SNAPSHOT@aar') {
         transitive = true
         exclude group: 'com.android.support', module: 'recyclerview-v7'
         exclude group: 'com.android.support', module: 'appcompat-v7'
@@ -113,14 +112,14 @@ dependencies {
         exclude group: 'com.android.support', module: 'appcompat-v7'
     }
 
-    implementation('org.smartregister:opensrp-client-immunization:1.4.44-SNAPSHOT@aar') {
+    implementation('org.smartregister:opensrp-client-immunization:2.0.3-SNAPSHOT@aar') {
         transitive = true
         exclude group: 'org.smartregister', module: 'opensrp-client-core'
         exclude group: 'org.smartregister', module: 'opensrp-client-native-form'
         exclude group: 'com.android.support', module: 'appcompat-v7'
     }
 
-    implementation('org.smartregister:opensrp-client-chw-anc:1.2.1.3-GS-PREVIEW-SNAPSHOT@aar') {
+    implementation('org.smartregister:opensrp-client-chw-anc:2.0.0-SNAPSHOT@aar') {
         transitive = true
         exclude group: 'org.smartregister', module: 'opensrp-client-core'
         exclude group: 'com.android.support', module: 'appcompat-v7'
