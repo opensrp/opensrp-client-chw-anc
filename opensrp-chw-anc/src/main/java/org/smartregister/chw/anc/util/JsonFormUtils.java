@@ -56,7 +56,7 @@ public class JsonFormUtils extends org.smartregister.util.JsonFormUtils {
         JSONObject metadata = null;
 
         List<JSONObject> fields_obj = new ArrayList<>();
-        String taskId = null;
+        String taskIdentifier = null;
 
         for (Map.Entry<String, String> map : jsonStrings.entrySet()) {
             Triple<Boolean, JSONObject, JSONArray> registrationFormParams = validateParameters(map.getValue());
@@ -88,11 +88,11 @@ public class JsonFormUtils extends org.smartregister.util.JsonFormUtils {
             }
 
             try {
-                // Add the taskId
+                // Add the taskIdentifier
                 if (jsonForm.has("details")) {
                     JSONObject detailsJSONObject = jsonForm.getJSONObject("details");
-                    if (detailsJSONObject != null && detailsJSONObject.has("taskId")) {
-                        taskId = detailsJSONObject.getString("taskId");
+                    if (detailsJSONObject != null && detailsJSONObject.has("taskIdentifier")) {
+                        taskIdentifier = detailsJSONObject.getString("taskIdentifier");
                     }
                 }
             } catch (JSONException ex) {
@@ -109,13 +109,13 @@ public class JsonFormUtils extends org.smartregister.util.JsonFormUtils {
         String derivedEncounterType = StringUtils.isBlank(encounterType) && jsonForm != null ? getString(jsonForm, ENCOUNTER_TYPE) : encounterType;
 
         Event event = org.smartregister.util.JsonFormUtils.createEvent(fields, metadata, formTag(allSharedPreferences), entityId, derivedEncounterType, tableName);
-        if (!TextUtils.isEmpty(taskId)) {
+        if (!TextUtils.isEmpty(taskIdentifier)) {
             Map<String, String> detailsMap = event.getDetails();
             if (detailsMap == null) {
                 detailsMap = new HashMap<>();
             }
 
-            detailsMap.put("taskId", taskId);
+            detailsMap.put("taskIdentifier", taskIdentifier);
             event.setDetails(detailsMap);
         }
 
