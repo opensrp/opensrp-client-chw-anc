@@ -504,7 +504,6 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
 
     @Override
     protected void initializePresenter() {
-        showProgressBar(true);
         registerPresenter();
         presenter().reloadMemberDetails(baseEntityID);
     }
