@@ -1,5 +1,7 @@
 package org.smartregister.chw.anc.util;
 
+import android.text.TextUtils;
+
 import com.vijay.jsonwizard.constants.JsonFormConstants;
 
 import org.apache.commons.lang3.StringUtils;
@@ -54,6 +56,7 @@ public class JsonFormUtils extends org.smartregister.util.JsonFormUtils {
         JSONObject metadata = null;
 
         List<JSONObject> fields_obj = new ArrayList<>();
+        String taskIdentifier = null;
 
         for (Map.Entry<String, String> map : jsonStrings.entrySet()) {
             Triple<Boolean, JSONObject, JSONArray> registrationFormParams = validateParameters(map.getValue());
@@ -83,6 +86,19 @@ public class JsonFormUtils extends org.smartregister.util.JsonFormUtils {
                 }
                 x++;
             }
+
+            try {
+                // Add the taskIdentifier
+                if (jsonForm.has("details")) {
+                    JSONObject detailsJSONObject = jsonForm.getJSONObject("details");
+                    if (detailsJSONObject != null && detailsJSONObject.has("taskIdentifier")) {
+                        taskIdentifier = detailsJSONObject.getString("taskIdentifier");
+                    }
+                }
+            } catch (JSONException ex) {
+                Timber.e(ex);
+            }
+
         }
 
         if (metadata == null) {
@@ -92,7 +108,18 @@ public class JsonFormUtils extends org.smartregister.util.JsonFormUtils {
         JSONArray fields = new JSONArray(fields_obj);
         String derivedEncounterType = StringUtils.isBlank(encounterType) && jsonForm != null ? getString(jsonForm, ENCOUNTER_TYPE) : encounterType;
 
-        return org.smartregister.util.JsonFormUtils.createEvent(fields, metadata, formTag(allSharedPreferences), entityId, derivedEncounterType, tableName);
+        Event event = org.smartregister.util.JsonFormUtils.createEvent(fields, metadata, formTag(allSharedPreferences), entityId, derivedEncounterType, tableName);
+        if (!TextUtils.isEmpty(taskIdentifier)) {
+            Map<String, String> detailsMap = event.getDetails();
+            if (detailsMap == null) {
+                detailsMap = new HashMap<>();
+            }
+
+            detailsMap.put("taskIdentifier", taskIdentifier);
+            event.setDetails(detailsMap);
+        }
+
+        return event;
     }
 
     public static Event prepareEvent(AllSharedPreferences allSharedPreferences, String entityId, String jsonString, String tableName) throws JSONException {
