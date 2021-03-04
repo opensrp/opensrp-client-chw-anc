@@ -50,7 +50,7 @@ public class SampleApplication extends DrishtiApplication {
         SyncStatusBroadcastReceiver.init(this);
 
         //Auto login by default
-        String password = "pwd";
+        byte[] password = "pwd".getBytes();
         context.session().start(context.session().lengthInMilliseconds());
         context.configuration().getDrishtiApplication().setPassword(password);
         context.session().setPassword(password);
@@ -61,11 +61,6 @@ public class SampleApplication extends DrishtiApplication {
 
         sampleUniqueIds();
 
-    }
-
-    @Override
-    public String getPassword() {
-        return super.getPassword();
     }
 
     @Override

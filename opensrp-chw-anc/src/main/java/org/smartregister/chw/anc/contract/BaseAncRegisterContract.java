@@ -21,7 +21,7 @@ public interface BaseAncRegisterContract {
 
     interface Presenter extends BaseRegisterContract.Presenter {
 
-        void startForm(String formName, String entityId, String metadata, String currentLocationId) throws Exception;
+        void startForm(String formName, String entityId, String metadata, String currentLocationId);
 
         void saveForm(String jsonString, boolean isEditMode, String table);
 

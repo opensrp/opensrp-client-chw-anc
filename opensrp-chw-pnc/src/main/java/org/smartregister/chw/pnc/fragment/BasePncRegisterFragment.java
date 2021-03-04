@@ -6,8 +6,8 @@ import org.smartregister.chw.pnc.activity.BasePncHomeVisitActivity;
 import org.smartregister.chw.pnc.activity.BasePncMemberProfileActivity;
 import org.smartregister.chw.pnc.presenter.BasePncRegisterFragmentPresenter;
 import org.smartregister.commonregistry.CommonPersonObjectClient;
-import org.smartregister.configurableviews.model.View;
 import org.smartregister.cursoradapter.RecyclerViewPaginatedAdapter;
+import org.smartregister.view.contract.IView;
 import org.smartregister.view.customcontrols.CustomFontTextView;
 
 import java.util.Set;
@@ -17,7 +17,7 @@ import provider.PncRegisterProvider;
 public class BasePncRegisterFragment extends BaseAncRegisterFragment {
 
     @Override
-    public void initializeAdapter(Set<View> visibleColumns) {
+    public void initializeAdapter(Set<IView> visibleColumns) {
         PncRegisterProvider pncRegisterProvider = new PncRegisterProvider(getActivity(), commonRepository(), visibleColumns, registerActionHandler, paginationViewHandler);
         clientAdapter = new RecyclerViewPaginatedAdapter(null, pncRegisterProvider, context().commonrepository(this.tablename));
         clientAdapter.setCurrentlimit(20);

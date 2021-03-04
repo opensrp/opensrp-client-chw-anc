@@ -1,5 +1,7 @@
 package org.smartregister.chw.anc.util;
 
+import android.text.TextUtils;
+
 import com.vijay.jsonwizard.constants.JsonFormConstants;
 
 import org.apache.commons.lang3.StringUtils;
@@ -10,7 +12,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.smartregister.chw.anc.AncLibrary;
 import org.smartregister.chw.anc.domain.VisitDetail;
+import org.smartregister.clientandeventmodel.Client;
 import org.smartregister.clientandeventmodel.Event;
+import org.smartregister.clientandeventmodel.EventClient;
 import org.smartregister.domain.tag.FormTag;
 import org.smartregister.immunization.domain.ServiceRecord;
 import org.smartregister.immunization.domain.Vaccine;
@@ -26,7 +30,6 @@ import timber.log.Timber;
 
 import static org.smartregister.chw.anc.util.Constants.ENCOUNTER_TYPE;
 import static org.smartregister.chw.anc.util.DBConstants.KEY.DOB;
-import static org.smartregister.chw.anc.util.DBConstants.KEY.LAST_NAME;
 import static org.smartregister.chw.anc.util.DBConstants.KEY.MOTHER_ENTITY_ID;
 import static org.smartregister.chw.anc.util.DBConstants.KEY.RELATIONAL_ID;
 import static org.smartregister.chw.anc.util.DBConstants.KEY.UNIQUE_ID;
@@ -36,6 +39,7 @@ public class JsonFormUtils extends org.smartregister.util.JsonFormUtils {
     public static final String IMAGE = "image";
     public static final String HOME_VISIT_GROUP = "home_visit_group";
     private static final String V_REQUIRED = "v_required";
+    private static final String LAST_NAME = "last_name";
 
     protected static Triple<Boolean, JSONObject, JSONArray> validateParameters(String jsonString) {
 
@@ -52,6 +56,7 @@ public class JsonFormUtils extends org.smartregister.util.JsonFormUtils {
         JSONObject metadata = null;
 
         List<JSONObject> fields_obj = new ArrayList<>();
+        String taskIdentifier = null;
 
         for (Map.Entry<String, String> map : jsonStrings.entrySet()) {
             Triple<Boolean, JSONObject, JSONArray> registrationFormParams = validateParameters(map.getValue());
@@ -81,6 +86,19 @@ public class JsonFormUtils extends org.smartregister.util.JsonFormUtils {
                 }
                 x++;
             }
+
+            try {
+                // Add the taskIdentifier
+                if (jsonForm.has("details")) {
+                    JSONObject detailsJSONObject = jsonForm.getJSONObject("details");
+                    if (detailsJSONObject != null && detailsJSONObject.has("taskIdentifier")) {
+                        taskIdentifier = detailsJSONObject.getString("taskIdentifier");
+                    }
+                }
+            } catch (JSONException ex) {
+                Timber.e(ex);
+            }
+
         }
 
         if (metadata == null) {
@@ -90,7 +108,18 @@ public class JsonFormUtils extends org.smartregister.util.JsonFormUtils {
         JSONArray fields = new JSONArray(fields_obj);
         String derivedEncounterType = StringUtils.isBlank(encounterType) && jsonForm != null ? getString(jsonForm, ENCOUNTER_TYPE) : encounterType;
 
-        return org.smartregister.util.JsonFormUtils.createEvent(fields, metadata, formTag(allSharedPreferences), entityId, derivedEncounterType, tableName);
+        Event event = org.smartregister.util.JsonFormUtils.createEvent(fields, metadata, formTag(allSharedPreferences), entityId, derivedEncounterType, tableName);
+        if (!TextUtils.isEmpty(taskIdentifier)) {
+            Map<String, String> detailsMap = event.getDetails();
+            if (detailsMap == null) {
+                detailsMap = new HashMap<>();
+            }
+
+            detailsMap.put("taskIdentifier", taskIdentifier);
+            event.setDetails(detailsMap);
+        }
+
+        return event;
     }
 
     public static Event prepareEvent(AllSharedPreferences allSharedPreferences, String entityId, String jsonString, String tableName) throws JSONException {
@@ -136,6 +165,42 @@ public class JsonFormUtils extends org.smartregister.util.JsonFormUtils {
         String entityId = getString(jsonForm, ENTITY_ID);
 
         return org.smartregister.util.JsonFormUtils.createEvent(fields, getJSONObject(jsonForm, METADATA), formTag(allSharedPreferences), entityId, getString(jsonForm, ENCOUNTER_TYPE), table);
+    }
+
+    public static EventClient processRegistrationForm(AllSharedPreferences allSharedPreferences, String jsonString, String table) {
+        try {
+            Triple<Boolean, JSONObject, JSONArray> registrationFormParams = validateParameters(jsonString);
+            if (!registrationFormParams.getLeft()) {
+                return null;
+            }
+
+            JSONObject jsonForm = registrationFormParams.getMiddle();
+            JSONArray fields = registrationFormParams.getRight();
+            String entityId = getString(jsonForm, ENTITY_ID);
+            if (StringUtils.isBlank(entityId)) {
+                entityId = generateRandomUUIDString();
+            }
+
+            Client originalClient = retrieveOriginalClient(entityId);
+            Client baseClient = org.smartregister.util.JsonFormUtils.createBaseClient(originalClient, fields, formTag(allSharedPreferences), entityId);
+            JSONObject lastNameObject = org.smartregister.util.JsonFormUtils.getFieldJSONObject(fields, LAST_NAME);
+            String lastName = (lastNameObject != null) ? lastNameObject.optString(VALUE) : "";
+            baseClient.setLastName(lastName);
+            Event baseEvent = org.smartregister.util.JsonFormUtils.createEvent(fields,
+                    getJSONObject(jsonForm, METADATA), formTag(allSharedPreferences),
+                    entityId, getString(jsonForm, ENCOUNTER_TYPE), table);
+            tagEvent(allSharedPreferences, baseEvent);
+            return new EventClient(baseEvent, baseClient);
+
+        } catch (Exception ex) {
+            Timber.e(ex);
+            return null;
+        }
+    }
+
+    public static Client retrieveOriginalClient(String baseEntityId) {
+        JSONObject originalClientJsonObject = AncLibrary.getInstance().getEcSyncHelper().getClient(baseEntityId);
+        return org.smartregister.util.JsonFormUtils.gson.fromJson(originalClientJsonObject.toString(), Client.class);
     }
 
     public static FormTag formTag(AllSharedPreferences allSharedPreferences) {

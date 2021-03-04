@@ -8,6 +8,8 @@ import org.smartregister.configurableviews.model.Field;
 import org.smartregister.configurableviews.model.RegisterConfiguration;
 import org.smartregister.configurableviews.model.View;
 import org.smartregister.configurableviews.model.ViewConfiguration;
+import org.smartregister.view.contract.IView;
+import org.smartregister.view.contract.IViewConfiguration;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
@@ -22,7 +24,7 @@ public class BaseAncRegisterFragmentPresenter implements BaseAncRegisterFragment
 
     protected RegisterConfiguration config;
 
-    protected Set<View> visibleColumns = new TreeSet<>();
+    protected Set<IView> visibleColumns = new TreeSet<>();
     protected String viewConfigurationIdentifier;
 
     public BaseAncRegisterFragmentPresenter(BaseAncRegisterFragmentContract.View view, BaseAncRegisterFragmentContract.Model model, String viewConfigurationIdentifier) {
@@ -68,7 +70,7 @@ public class BaseAncRegisterFragmentPresenter implements BaseAncRegisterFragment
             return;
         }
 
-        ViewConfiguration viewConfiguration = model.getViewConfiguration(viewConfigurationIdentifier);
+        IViewConfiguration viewConfiguration = model.getViewConfiguration(viewConfigurationIdentifier);
         if (viewConfiguration != null) {
             config = (RegisterConfiguration) viewConfiguration.getMetadata();
             this.visibleColumns = model.getRegisterActiveColumns(viewConfigurationIdentifier);

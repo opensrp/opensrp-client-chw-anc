@@ -53,13 +53,13 @@ public class BaseAncRegisterActivity extends BaseRegisterActivity implements Bas
      */
     protected void onStartActivityWithAction() {
         if (ACTION != null && ACTION.equals(Constants.ACTIVITY_PAYLOAD_TYPE.REGISTRATION)) {
-            startFormActivity(getRegistrationForm(), BASE_ENTITY_ID, (String)null);
+            startFormActivity(getRegistrationForm(), BASE_ENTITY_ID, (String) null);
         }
     }
 
     @Override
     public void startRegistration() {
-        startFormActivity(getRegistrationForm(), null, (String)null);
+        startFormActivity(getRegistrationForm(), null, (String) null);
     }
 
     public String getRegistrationForm() {
@@ -192,7 +192,7 @@ public class BaseAncRegisterActivity extends BaseRegisterActivity implements Bas
 
     @Override
     public void startFormActivity(String s, String s1, Map<String, String> map) {
-        // do nothing
+        // Abstract method implementation
     }
 
     @Override
