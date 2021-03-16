@@ -76,6 +76,7 @@ public class BaseAncHomeVisitFragment extends BaseHomeVisitFragment implements V
     private SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
     private List<JSONObject> optionList = new ArrayList<>();
     private Map<String, String> dateConstraints = new HashMap<>();
+    private String value;
 
     public static BaseAncHomeVisitFragment getInstance(final BaseAncHomeVisitContract.VisitView view, String form_name, JSONObject json, Map<String, List<VisitDetail>> details, String count) {
         JSONObject jsonObject = json;
@@ -230,6 +231,7 @@ public class BaseAncHomeVisitFragment extends BaseHomeVisitFragment implements V
                 rb.setText(object.getString(JsonFormConstants.TEXT));
 
                 String key = object.getString(JsonFormConstants.KEY);
+                rb.setChecked(key.equalsIgnoreCase(value));
                 rb.setTag(R.id.home_visit_radio_key, key);
                 rb.setOnClickListener(v -> {
                     if (rb.isChecked())
@@ -370,6 +372,7 @@ public class BaseAncHomeVisitFragment extends BaseHomeVisitFragment implements V
 
     @Override
     public void setValue(String value) {
+        this.value = value;
         if (getQuestionType() == QuestionType.BOOLEAN) {
             if (radioButtonNo != null && radioButtonYes != null) {
                 setYesNoListenersActive(false);
