@@ -237,7 +237,7 @@ public class BaseAncHomeVisitFragment extends BaseHomeVisitFragment implements V
                 }
                 rb.setTag(R.id.home_visit_radio_key, key);
                 rb.setOnClickListener(v -> {
-                    if (rb.isChecked() && radioButtonChecked != rb) {
+                    if (rb.isChecked() && !radioButtonChecked.equals(rb)) {
                         radioButtonChecked.setChecked(false);
                         rb.setChecked(true);
                         onSelectOption(key);
