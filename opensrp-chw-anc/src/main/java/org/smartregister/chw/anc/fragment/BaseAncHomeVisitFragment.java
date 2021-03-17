@@ -77,6 +77,7 @@ public class BaseAncHomeVisitFragment extends BaseHomeVisitFragment implements V
     private List<JSONObject> optionList = new ArrayList<>();
     private Map<String, String> dateConstraints = new HashMap<>();
     private String value;
+    private RadioButton radioButtonChecked;
 
     public static BaseAncHomeVisitFragment getInstance(final BaseAncHomeVisitContract.VisitView view, String form_name, JSONObject json, Map<String, List<VisitDetail>> details, String count) {
         JSONObject jsonObject = json;
@@ -229,13 +230,19 @@ public class BaseAncHomeVisitFragment extends BaseHomeVisitFragment implements V
 
             try {
                 rb.setText(object.getString(JsonFormConstants.TEXT));
-
                 String key = object.getString(JsonFormConstants.KEY);
-                rb.setChecked(key.equalsIgnoreCase(value));
+                if (key.equalsIgnoreCase(value)) {
+                    rb.setChecked(true);
+                    radioButtonChecked = rb;
+                }
                 rb.setTag(R.id.home_visit_radio_key, key);
                 rb.setOnClickListener(v -> {
-                    if (rb.isChecked())
+                    if (rb.isChecked() && radioButtonChecked != rb) {
+                        radioButtonChecked.setChecked(false);
+                        rb.setChecked(true);
                         onSelectOption(key);
+                        radioButtonChecked = rb;
+                    }
                 });
             } catch (JSONException e) {
                 Timber.e(e);
