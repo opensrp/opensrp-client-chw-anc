@@ -3,7 +3,6 @@ package org.smartregister.chw.anc.fragment;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.os.Bundle;
-import androidx.annotation.DrawableRes;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +12,8 @@ import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+
+import androidx.annotation.DrawableRes;
 
 import com.vijay.jsonwizard.constants.JsonFormConstants;
 
@@ -236,9 +237,10 @@ public class BaseAncHomeVisitFragment extends BaseHomeVisitFragment implements V
                     radioButtonChecked = rb;
                 }
                 rb.setTag(R.id.home_visit_radio_key, key);
+
                 rb.setOnClickListener(v -> {
-                    if (rb.isChecked() && !radioButtonChecked.equals(rb)) {
-                        radioButtonChecked.setChecked(false);
+                    if (rb.isChecked() && !isSameRadioButton(rb)) {
+                        if (radioButtonChecked != null) radioButtonChecked.setChecked(false);
                         rb.setChecked(true);
                         onSelectOption(key);
                         radioButtonChecked = rb;
@@ -248,6 +250,14 @@ public class BaseAncHomeVisitFragment extends BaseHomeVisitFragment implements V
                 Timber.e(e);
             }
             radioGroupDynamic.addView(rb); //the RadioButtons are added to the radioGroup instead of the layout
+        }
+    }
+
+    public boolean isSameRadioButton(RadioButton radioButton) {
+        if (radioButtonChecked != null) {
+            return radioButtonChecked.equals(radioButton);
+        } else {
+            return false;
         }
     }
 
@@ -340,7 +350,7 @@ public class BaseAncHomeVisitFragment extends BaseHomeVisitFragment implements V
     }
 
     protected void onShowInfo() {
-        if(getView() == null)
+        if (getView() == null)
             return;
 
         AlertDialog.Builder builderSingle = new AlertDialog.Builder(getView().getContext(), com.vijay.jsonwizard.R.style.AppThemeAlertDialog);
@@ -523,7 +533,7 @@ public class BaseAncHomeVisitFragment extends BaseHomeVisitFragment implements V
     }
 
     @Override
-    public void onClose(){
+    public void onClose() {
         try {
             if (getActivity() != null && getActivity().getSupportFragmentManager() != null)
                 getActivity().getSupportFragmentManager().beginTransaction().remove(this).commit();
