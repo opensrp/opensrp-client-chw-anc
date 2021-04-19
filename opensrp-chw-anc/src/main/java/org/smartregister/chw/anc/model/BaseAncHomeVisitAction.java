@@ -65,7 +65,12 @@ public class BaseAncHomeVisitAction {
     private void initialize() {
         try {
             if (StringUtils.isBlank(jsonPayload) && StringUtils.isNotBlank(formName)) {
-                JSONObject jsonObject = new JSONObject(getTranslatedString(FormUtils.getInstance(context).getFormJson(formName).toString(), context));
+                JSONObject jsonObject = new JSONObject();
+                try {
+                    jsonObject = new JSONObject(getTranslatedString(FormUtils.getInstance(context).getFormJson(formName).toString(), context));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
 
                 // update the form details
                 if (details != null && details.size() > 0) {
