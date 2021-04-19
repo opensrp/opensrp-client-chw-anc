@@ -81,12 +81,12 @@ public class BaseAncHomeVisitFragment extends BaseHomeVisitFragment implements V
     private String value;
     private RadioButton radioButtonChecked;
 
-    public static BaseAncHomeVisitFragment getInstance(Context context, final BaseAncHomeVisitContract.VisitView view, String form_name, JSONObject json, Map<String, List<VisitDetail>> details, String count) {
+    public static BaseAncHomeVisitFragment getInstance(final BaseAncHomeVisitContract.VisitView view, String form_name, JSONObject json, Map<String, List<VisitDetail>> details, String count) {
         JSONObject jsonObject = json;
         if (StringUtils.isNotBlank(form_name) && json == null) {
             try {
                 String jsonForm = FormUtils.getInstance(view.getMyContext()).getFormJson(form_name).toString();
-                jsonObject = new JSONObject(getTranslatedString(jsonForm, context));
+                jsonObject = new JSONObject(getTranslatedString(jsonForm, view.getMyContext()));
             } catch (Exception e) {
                 e.printStackTrace();
             }
