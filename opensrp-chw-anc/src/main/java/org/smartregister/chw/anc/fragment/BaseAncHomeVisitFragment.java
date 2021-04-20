@@ -47,6 +47,7 @@ import java.util.Map;
 
 import timber.log.Timber;
 
+import static com.vijay.jsonwizard.utils.NativeFormLangUtils.getTranslatedString;
 import static org.smartregister.util.JsonFormUtils.fields;
 
 public class BaseAncHomeVisitFragment extends BaseHomeVisitFragment implements View.OnClickListener, BaseAncHomeVisitFragmentContract.View {
@@ -84,7 +85,8 @@ public class BaseAncHomeVisitFragment extends BaseHomeVisitFragment implements V
         JSONObject jsonObject = json;
         if (StringUtils.isNotBlank(form_name) && json == null) {
             try {
-                jsonObject = FormUtils.getInstance(view.getMyContext()).getFormJson(form_name);
+                String jsonForm = FormUtils.getInstance(view.getMyContext()).getFormJson(form_name).toString();
+                jsonObject = new JSONObject(getTranslatedString(jsonForm, view.getMyContext()));
             } catch (Exception e) {
                 e.printStackTrace();
             }
