@@ -3,7 +3,6 @@ package org.smartregister.chw.anc.fragment;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.os.Bundle;
-import androidx.annotation.DrawableRes;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +12,8 @@ import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+
+import androidx.annotation.DrawableRes;
 
 import com.vijay.jsonwizard.constants.JsonFormConstants;
 
@@ -46,6 +47,7 @@ import java.util.Map;
 
 import timber.log.Timber;
 
+import static com.vijay.jsonwizard.utils.NativeFormLangUtils.getTranslatedString;
 import static org.smartregister.util.JsonFormUtils.fields;
 
 public class BaseAncHomeVisitFragment extends BaseHomeVisitFragment implements View.OnClickListener, BaseAncHomeVisitFragmentContract.View {
@@ -76,12 +78,15 @@ public class BaseAncHomeVisitFragment extends BaseHomeVisitFragment implements V
     private SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
     private List<JSONObject> optionList = new ArrayList<>();
     private Map<String, String> dateConstraints = new HashMap<>();
+    private String value;
+    private RadioButton radioButtonChecked;
 
     public static BaseAncHomeVisitFragment getInstance(final BaseAncHomeVisitContract.VisitView view, String form_name, JSONObject json, Map<String, List<VisitDetail>> details, String count) {
         JSONObject jsonObject = json;
         if (StringUtils.isNotBlank(form_name) && json == null) {
             try {
-                jsonObject = FormUtils.getInstance(view.getMyContext()).getFormJson(form_name);
+                String jsonForm = FormUtils.getInstance(view.getMyContext()).getFormJson(form_name).toString();
+                jsonObject = new JSONObject(getTranslatedString(jsonForm, view.getMyContext()));
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -228,17 +233,33 @@ public class BaseAncHomeVisitFragment extends BaseHomeVisitFragment implements V
 
             try {
                 rb.setText(object.getString(JsonFormConstants.TEXT));
-
                 String key = object.getString(JsonFormConstants.KEY);
+                if (key.equalsIgnoreCase(value)) {
+                    rb.setChecked(true);
+                    radioButtonChecked = rb;
+                }
                 rb.setTag(R.id.home_visit_radio_key, key);
+
                 rb.setOnClickListener(v -> {
-                    if (rb.isChecked())
+                    if (rb.isChecked() && !isSameRadioButton(rb)) {
+                        if (radioButtonChecked != null) radioButtonChecked.setChecked(false);
+                        rb.setChecked(true);
                         onSelectOption(key);
+                        radioButtonChecked = rb;
+                    }
                 });
             } catch (JSONException e) {
                 Timber.e(e);
             }
             radioGroupDynamic.addView(rb); //the RadioButtons are added to the radioGroup instead of the layout
+        }
+    }
+
+    public boolean isSameRadioButton(RadioButton radioButton) {
+        if (radioButtonChecked != null) {
+            return radioButtonChecked.equals(radioButton);
+        } else {
+            return false;
         }
     }
 
@@ -331,7 +352,7 @@ public class BaseAncHomeVisitFragment extends BaseHomeVisitFragment implements V
     }
 
     protected void onShowInfo() {
-        if(getView() == null)
+        if (getView() == null)
             return;
 
         AlertDialog.Builder builderSingle = new AlertDialog.Builder(getView().getContext(), com.vijay.jsonwizard.R.style.AppThemeAlertDialog);
@@ -370,6 +391,7 @@ public class BaseAncHomeVisitFragment extends BaseHomeVisitFragment implements V
 
     @Override
     public void setValue(String value) {
+        this.value = value;
         if (getQuestionType() == QuestionType.BOOLEAN) {
             if (radioButtonNo != null && radioButtonYes != null) {
                 setYesNoListenersActive(false);
@@ -513,7 +535,7 @@ public class BaseAncHomeVisitFragment extends BaseHomeVisitFragment implements V
     }
 
     @Override
-    public void onClose(){
+    public void onClose() {
         try {
             if (getActivity() != null && getActivity().getSupportFragmentManager() != null)
                 getActivity().getSupportFragmentManager().beginTransaction().remove(this).commit();

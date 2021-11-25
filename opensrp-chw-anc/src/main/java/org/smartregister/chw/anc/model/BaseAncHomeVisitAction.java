@@ -13,6 +13,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.vijay.jsonwizard.utils.NativeFormLangUtils.getTranslatedString;
+
 /**
  * This action list allows users to either load a form or link it to a separate fragment.
  */
@@ -63,7 +65,12 @@ public class BaseAncHomeVisitAction {
     private void initialize() {
         try {
             if (StringUtils.isBlank(jsonPayload) && StringUtils.isNotBlank(formName)) {
-                JSONObject jsonObject = FormUtils.getInstance(context).getFormJson(formName);
+                JSONObject jsonObject = new JSONObject();
+                try {
+                    jsonObject = new JSONObject(getTranslatedString(FormUtils.getInstance(context).getFormJson(formName).toString(), context));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
 
                 // update the form details
                 if (details != null && details.size() > 0) {

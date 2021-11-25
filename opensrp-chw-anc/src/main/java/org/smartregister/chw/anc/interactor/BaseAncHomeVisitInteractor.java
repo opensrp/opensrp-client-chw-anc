@@ -26,6 +26,8 @@ import org.smartregister.chw.anc.util.NCUtils;
 import org.smartregister.chw.anc.util.VisitUtils;
 import org.smartregister.clientandeventmodel.Event;
 import org.smartregister.clientandeventmodel.Obs;
+import org.smartregister.clientandeventmodel.User;
+import org.smartregister.domain.SyncStatus;
 import org.smartregister.immunization.ImmunizationLibrary;
 import org.smartregister.immunization.domain.ServiceRecord;
 import org.smartregister.immunization.domain.Vaccine;
@@ -42,7 +44,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.UUID;
 
 import timber.log.Timber;
 
@@ -304,15 +305,17 @@ public class BaseAncHomeVisitInteractor implements BaseAncHomeVisitContract.Inte
         Event event = (Event) new Event()
                 .withBaseEntityId(baseEntityId)
                 .withEventDate(new Date())
-                .withEventType(Constants.EVENT_TYPE.DELETE_EVENT)
+                .withEventType(Constants.EVENT_TYPE.VOID_EVENT)
                 .withLocationId(JsonFormUtils.locationId(allSharedPreferences))
                 .withProviderId(allSharedPreferences.fetchRegisteredANM())
                 .withEntityType(type)
-                .withFormSubmissionId(UUID.randomUUID().toString())
-                .withDateCreated(new Date());
+                .withFormSubmissionId(formSubmissionId)
+                .withVoided(true)
+                .withVoider(new User(null, allSharedPreferences.fetchRegisteredANM(), null, null))
+                .withVoidReason("Edited Event")
+                .withDateVoided(new Date());
 
-        event.addDetails(Constants.JSON_FORM_EXTRA.DELETE_EVENT_ID, eventId);
-        event.addDetails(Constants.JSON_FORM_EXTRA.DELETE_FORM_SUBMISSION_ID, formSubmissionId);
+        event.setSyncStatus(SyncStatus.PENDING.value());
 
         try {
             syncHelper.addEvent(event.getBaseEntityId(), new JSONObject(JsonFormUtils.gson.toJson(event)));

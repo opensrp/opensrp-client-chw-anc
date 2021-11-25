@@ -3,6 +3,7 @@ package org.smartregister.chw.anc.application;
 import org.smartregister.Context;
 import org.smartregister.CoreLibrary;
 import org.smartregister.chw.anc.AncLibrary;
+import org.smartregister.chw.anc.sync.SampleSyncConfiguration;
 import org.smartregister.configurableviews.ConfigurableViewsLibrary;
 import org.smartregister.receiver.SyncStatusBroadcastReceiver;
 import org.smartregister.repository.Repository;
@@ -25,7 +26,7 @@ public class SampleDefaultApplication extends DrishtiApplication {
         context.updateApplicationContext(getApplicationContext());
 
         //Initialize Modules
-        CoreLibrary.init(context);
+        CoreLibrary.init(context, new SampleSyncConfiguration());
         ConfigurableViewsLibrary.init(context);
         AncLibrary.init(context, getRepository(), 1, 1);
 
@@ -34,8 +35,6 @@ public class SampleDefaultApplication extends DrishtiApplication {
         //Auto login by default
         String password = "pwd";
         context.session().start(context.session().lengthInMilliseconds());
-        context.configuration().getDrishtiApplication().setPassword(password);
-        context.session().setPassword(password);
 
     }
 

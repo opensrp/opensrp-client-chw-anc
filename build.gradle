@@ -4,11 +4,13 @@ buildscript {
         google()
         mavenCentral()
         maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
+        maven{  url "https://plugins.gradle.org/m2/" }
     }
 
     dependencies {
         classpath "io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.11.0"
         classpath 'org.smartregister:gradle-jarjar-plugin:1.0.0-SNAPSHOT'
+        classpath 'gradle.plugin.org.kt3k.gradle.plugin:coveralls-gradle-plugin:2.10.2'
     }
 }
 
@@ -68,6 +70,7 @@ subprojects {
 
 apply plugin : 'java'
 apply plugin : 'build-dashboard'
+apply plugin: 'com.github.kt3k.coveralls'
 apply plugin: 'io.codearte.nexus-staging'
 
 buildDashboard {
