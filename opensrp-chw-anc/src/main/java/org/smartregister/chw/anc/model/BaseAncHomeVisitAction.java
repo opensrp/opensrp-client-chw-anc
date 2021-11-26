@@ -154,7 +154,11 @@ public class BaseAncHomeVisitAction {
     }
 
     public String getSubTitle() {
-        return subTitle;
+        if(ancHomeVisitActionHelper != null){
+            return StringUtils.isNotBlank(ancHomeVisitActionHelper.evaluateSubTitle()) ? ancHomeVisitActionHelper.evaluateSubTitle() : ancHomeVisitActionHelper.getPreProcessedSubTitle();
+        }else{
+            return subTitle;
+        }
     }
 
     public void setSubTitle(String subTitle) {
