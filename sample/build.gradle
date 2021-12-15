@@ -92,7 +92,7 @@ dependencies {
         exclude group: 'com.ibm.fhir', module:'fhir-model'
     }
 
-    jarJar 'com.ibm.fhir:fhir-model:4.2.3'
+    jarJar 'com.ibm.fhir:fhir-model:4.7.0'
 
     // Repackaged jars will be placed here, adding them to classpath
     implementation fileTree(dir: "./build/libs", include: ['*.jar'])
@@ -141,5 +141,5 @@ dependencies {
 jarJar {
 
     // Dependencies and related JarJar rules
-    remove = ['fhir-model-4.2.3.jar': 'com.ibm.fhir.model.visitor.CopyingVisitor*']
+    remove = ['fhir-model-4.7.0.jar': 'com.ibm.fhir.model.visitor.CopyingVisitor*']
 }

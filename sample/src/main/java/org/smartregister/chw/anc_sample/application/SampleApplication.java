@@ -52,8 +52,8 @@ public class SampleApplication extends DrishtiApplication {
         //Auto login by default
         String password = "pwd";
         context.session().start(context.session().lengthInMilliseconds());
-        context.configuration().getDrishtiApplication().setPassword(password);
-        context.session().setPassword(password);
+        context.configuration().getDrishtiApplication().setPassword(password.getBytes());
+        context.session().setPassword(password.getBytes());
 
 
         //init Job Manager
@@ -61,11 +61,6 @@ public class SampleApplication extends DrishtiApplication {
 
         sampleUniqueIds();
 
-    }
-
-    @Override
-    public String getPassword() {
-        return super.getPassword();
     }
 
     @Override
