@@ -17,6 +17,14 @@ public interface Constants {
         String DELETE_FORM_SUBMISSION_ID = "deleted_form_submission_id";
     }
 
+    interface JSON_FORM_KEY {
+        String NO_CHILDREN = "no_children_no";
+    }
+
+    interface JSON_FORM {
+        String REPEATING_GROUP_UNIQUE_ID = "unique_id";
+    }
+
     interface EVENT_TYPE {
         String ANC_REGISTRATION = "Anc Registration";
         String ANC_HOME_VISIT = "ANC Home Visit";

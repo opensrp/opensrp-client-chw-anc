@@ -1,5 +1,14 @@
 package org.smartregister.chw.anc.util;
 
+import static org.smartregister.chw.anc.util.Constants.ENCOUNTER_TYPE;
+import static org.smartregister.chw.anc.util.DBConstants.KEY.DOB;
+import static org.smartregister.chw.anc.util.DBConstants.KEY.LAST_NAME;
+import static org.smartregister.chw.anc.util.DBConstants.KEY.MOTHER_ENTITY_ID;
+import static org.smartregister.chw.anc.util.DBConstants.KEY.RELATIONAL_ID;
+import static org.smartregister.chw.anc.util.DBConstants.KEY.UNIQUE_ID;
+
+import androidx.annotation.NonNull;
+
 import com.vijay.jsonwizard.constants.JsonFormConstants;
 
 import org.apache.commons.lang3.StringUtils;
@@ -11,6 +20,7 @@ import org.json.JSONObject;
 import org.smartregister.chw.anc.AncLibrary;
 import org.smartregister.chw.anc.domain.VisitDetail;
 import org.smartregister.clientandeventmodel.Event;
+import org.smartregister.clientandeventmodel.Obs;
 import org.smartregister.domain.tag.FormTag;
 import org.smartregister.immunization.domain.ServiceRecord;
 import org.smartregister.immunization.domain.Vaccine;
@@ -19,17 +29,12 @@ import org.smartregister.repository.AllSharedPreferences;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import timber.log.Timber;
-
-import static org.smartregister.chw.anc.util.Constants.ENCOUNTER_TYPE;
-import static org.smartregister.chw.anc.util.DBConstants.KEY.DOB;
-import static org.smartregister.chw.anc.util.DBConstants.KEY.LAST_NAME;
-import static org.smartregister.chw.anc.util.DBConstants.KEY.MOTHER_ENTITY_ID;
-import static org.smartregister.chw.anc.util.DBConstants.KEY.RELATIONAL_ID;
-import static org.smartregister.chw.anc.util.DBConstants.KEY.UNIQUE_ID;
 
 public class JsonFormUtils extends org.smartregister.util.JsonFormUtils {
     public static final String METADATA = "metadata";
@@ -195,11 +200,11 @@ public class JsonFormUtils extends org.smartregister.util.JsonFormUtils {
 
 
     /**
-     * Returns a value from json form field
+     * Returns a String value from json form field
      *
      * @param jsonObject native forms jsonObject
      * @param key        field object key
-     * @return value
+     * @return String value
      */
     public static String getValue(JSONObject jsonObject, String key) {
         try {
@@ -216,6 +221,30 @@ public class JsonFormUtils extends org.smartregister.util.JsonFormUtils {
             Timber.e(e);
         }
         return "";
+    }
+
+    /**
+     * Returns an Array value from JSON form field
+     *
+     * @param jsonObject native forms jsonObject
+     * @param key        field object key
+     * @return Array value
+     */
+    public static JSONArray getValueArray(JSONObject jsonObject, String key) {
+        try {
+            JSONArray jsonArray = jsonObject.getJSONObject(JsonFormConstants.STEP1).getJSONArray(JsonFormConstants.FIELDS);
+            int x = 0;
+            while (jsonArray.length() > x) {
+                JSONObject jo = jsonArray.getJSONObject(x);
+                if (jo.getString(JsonFormConstants.KEY).equalsIgnoreCase(key) && jo.has(JsonFormConstants.VALUE)) {
+                    return jo.getJSONArray(JsonFormConstants.VALUE);
+                }
+                x++;
+            }
+        } catch (Exception e) {
+            Timber.e(e);
+        }
+        return null;
     }
 
     public static String getFirstObjectKey(JSONObject jsonObject) {
@@ -438,6 +467,86 @@ public class JsonFormUtils extends org.smartregister.util.JsonFormUtils {
                     e.printStackTrace();
                 }
             }
+        }
+    }
+
+    /**
+     * Build an ordered Map of repeating group Obs from an event JSON
+     *
+     * @param jsonObject        Form JSONObject
+     * @param obs               Event Obs list
+     * @param repeatingGroupKey Repeating group field key
+     * @return Map of unique keys mapped to another values map of key, value pairs
+     */
+    public static LinkedHashMap<String, HashMap<String, String>> buildRepeatingGroupMap(@NonNull JSONObject jsonObject, List<Obs> obs, String repeatingGroupKey) {
+        LinkedHashMap<String, HashMap<String, String>> repeatingGroupMap = new LinkedHashMap<>();
+        JSONArray jsonArray = getValueArray(jsonObject, repeatingGroupKey);
+        List<String> keysArrayList = new ArrayList<>();
+
+        if (jsonArray != null) {
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject valueField = jsonArray.optJSONObject(i);
+                String fieldKey = valueField.optString(JsonFormConstants.KEY);
+                keysArrayList.add(fieldKey);
+            }
+
+            for (int k = 0; k < obs.size(); k++) {
+                Obs valueField = obs.get(k);
+                String fieldKey = valueField.getFormSubmissionField();
+                List<Object> values = (isNotNullOrEmpty(valueField.getHumanReadableValues())) ? valueField.getHumanReadableValues() : valueField.getValues();
+
+                if (isNotNullOrEmpty(values) && fieldKey.contains("_")) {
+                    fieldKey = fieldKey.substring(0, fieldKey.lastIndexOf("_"));
+                    if (keysArrayList.contains(fieldKey)) {
+                        String fieldValue = (String) values.get(0);
+                        if (StringUtils.isNotBlank(fieldValue)) {
+                            String fieldKeyId = valueField.getFormSubmissionField().substring(fieldKey.length() + 1);
+                            HashMap<String, String> hashMap = repeatingGroupMap.get(fieldKeyId) == null ? new HashMap<>() : repeatingGroupMap.get(fieldKeyId);
+                            hashMap.put(fieldKey, fieldValue);
+                            hashMap.put(Constants.JSON_FORM.REPEATING_GROUP_UNIQUE_ID, fieldKeyId);
+                            repeatingGroupMap.put(fieldKeyId, hashMap);
+                        }
+                    }
+                }
+            }
+        }
+        return repeatingGroupMap;
+    }
+
+    public static boolean isNotNullOrEmpty(List<Object> list) {
+        return list != null && !list.isEmpty();
+    }
+
+    /**
+     * Update the Pregnancy Outcome Event with formatted multiple babies' details Obs
+     *
+     * @param jsonString JsonForm String
+     * @param event      Pre-processed Pregnancy Outcome Event
+     */
+    public static void updatePregnancyOutcomeEventObs(String jsonString, Event event) throws JSONException {
+        JSONObject jsonFormObject;
+        try {
+            jsonFormObject = new JSONObject(jsonString);
+
+            LinkedHashMap<String, HashMap<String, String>> repeatingGroupsMap = buildRepeatingGroupMap(jsonFormObject, event.getObs(), Constants.JSON_FORM_KEY.NO_CHILDREN);
+            if (!repeatingGroupsMap.isEmpty()) {
+                JSONArray repeatArray = new JSONArray();
+                for (String key : repeatingGroupsMap.keySet()) {
+                    repeatArray.put(new JSONObject(Objects.requireNonNull(repeatingGroupsMap.get(key))));
+                }
+                List<Object> obsValues = new ArrayList<>();
+                obsValues.add(repeatArray.toString());
+                Obs formattedRepeatObs = new Obs();
+                formattedRepeatObs.setFieldCode("child_repeat_group_values_list");
+                formattedRepeatObs.setFieldDataType("repeatvalueslist");
+                formattedRepeatObs.setFieldType("concept");
+                formattedRepeatObs.setFormSubmissionField("repeatvalueslist");
+                formattedRepeatObs.setSaveObsAsArray(false);
+                formattedRepeatObs.setValues(obsValues);
+                event.addObs(formattedRepeatObs);
+            }
+        } catch (Exception ex) {
+            Timber.e(ex);
         }
     }
 
