@@ -528,7 +528,7 @@ public class JsonFormUtils extends org.smartregister.util.JsonFormUtils {
         try {
             jsonFormObject = new JSONObject(jsonString);
 
-            LinkedHashMap<String, HashMap<String, String>> repeatingGroupsMap = buildRepeatingGroupMap(jsonFormObject, event.getObs(), Constants.JSON_FORM_KEY.NO_CHILDREN);
+            LinkedHashMap<String, HashMap<String, String>> repeatingGroupsMap = buildRepeatingGroupMap(jsonFormObject, event.getObs(), Constants.JsonFormKey.NO_CHILDREN);
             if (!repeatingGroupsMap.isEmpty()) {
                 JSONArray repeatArray = new JSONArray();
                 for (String key : repeatingGroupsMap.keySet()) {

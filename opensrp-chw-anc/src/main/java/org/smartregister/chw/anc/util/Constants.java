@@ -17,7 +17,7 @@ public interface Constants {
         String DELETE_FORM_SUBMISSION_ID = "deleted_form_submission_id";
     }
 
-    interface JSON_FORM_KEY {
+    interface JsonFormKey {
         String NO_CHILDREN = "no_children_no";
     }
 
