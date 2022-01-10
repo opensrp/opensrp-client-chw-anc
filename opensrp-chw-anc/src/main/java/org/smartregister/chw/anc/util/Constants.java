@@ -19,9 +19,12 @@ public interface Constants {
 
     interface JsonFormKey {
         String NO_CHILDREN = "no_children_no";
+        String CHK_BCG = "chk_bcg";
+        String BCG_DATE = "bcg_date";
+        String OPV_0_DATE = "opv0_date";
     }
 
-    interface JSON_FORM {
+    interface JsonForm {
         String REPEATING_GROUP_UNIQUE_ID = "unique_id";
     }
 

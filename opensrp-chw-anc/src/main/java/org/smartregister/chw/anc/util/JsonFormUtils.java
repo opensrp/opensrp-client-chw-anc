@@ -226,20 +226,22 @@ public class JsonFormUtils extends org.smartregister.util.JsonFormUtils {
     /**
      * Returns an Array value from JSON form field
      *
-     * @param jsonObject native forms jsonObject
+     * @param formJsonObject native forms jsonObject
+     * @param step       JSON Form step with the field
      * @param key        field object key
      * @return Array value
      */
-    public static JSONArray getValueArray(JSONObject jsonObject, String key) {
+    public static JSONArray getValueArray(JSONObject formJsonObject, String step, String key) {
         try {
-            JSONArray jsonArray = jsonObject.getJSONObject(JsonFormConstants.STEP1).getJSONArray(JsonFormConstants.FIELDS);
-            int x = 0;
-            while (jsonArray.length() > x) {
-                JSONObject jo = jsonArray.getJSONObject(x);
-                if (jo.getString(JsonFormConstants.KEY).equalsIgnoreCase(key) && jo.has(JsonFormConstants.VALUE)) {
-                    return jo.getJSONArray(JsonFormConstants.VALUE);
+            JSONArray fieldsArray = formJsonObject.getJSONObject(step).getJSONArray(JsonFormConstants.FIELDS);
+            int totalFields = fieldsArray.length() ;
+            int objectIndex = 0;
+            while (objectIndex < totalFields) {
+                JSONObject jsonObject = fieldsArray.getJSONObject(objectIndex);
+                if (jsonObject.getString(JsonFormConstants.KEY).equalsIgnoreCase(key) && jsonObject.has(JsonFormConstants.VALUE)) {
+                    return jsonObject.getJSONArray(JsonFormConstants.VALUE);
                 }
-                x++;
+                objectIndex++;
             }
         } catch (Exception e) {
             Timber.e(e);
@@ -480,7 +482,7 @@ public class JsonFormUtils extends org.smartregister.util.JsonFormUtils {
      */
     public static LinkedHashMap<String, HashMap<String, String>> buildRepeatingGroupMap(@NonNull JSONObject jsonObject, List<Obs> obs, String repeatingGroupKey) {
         LinkedHashMap<String, HashMap<String, String>> repeatingGroupMap = new LinkedHashMap<>();
-        JSONArray jsonArray = getValueArray(jsonObject, repeatingGroupKey);
+        JSONArray jsonArray = getValueArray(jsonObject, STEP1, repeatingGroupKey);
         List<String> keysArrayList = new ArrayList<>();
 
         if (jsonArray != null) {
@@ -503,7 +505,7 @@ public class JsonFormUtils extends org.smartregister.util.JsonFormUtils {
                             String fieldKeyId = valueField.getFormSubmissionField().substring(fieldKey.length() + 1);
                             HashMap<String, String> hashMap = repeatingGroupMap.get(fieldKeyId) == null ? new HashMap<>() : repeatingGroupMap.get(fieldKeyId);
                             hashMap.put(fieldKey, fieldValue);
-                            hashMap.put(Constants.JSON_FORM.REPEATING_GROUP_UNIQUE_ID, fieldKeyId);
+                            hashMap.put(Constants.JsonForm.REPEATING_GROUP_UNIQUE_ID, fieldKeyId);
                             repeatingGroupMap.put(fieldKeyId, hashMap);
                         }
                     }
