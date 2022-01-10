@@ -1,6 +1,8 @@
 package org.smartregister.chw.anc.util;
 
 import static org.smartregister.chw.anc.util.Constants.ENCOUNTER_TYPE;
+import static org.smartregister.chw.anc.util.Constants.JsonForm.REPEATING_GROUP_FIELD_DATA_TYPE;
+import static org.smartregister.chw.anc.util.Constants.JsonFormKey.CHILD_REPEAT_GROUP_VALUES_LIST;
 import static org.smartregister.chw.anc.util.DBConstants.KEY.DOB;
 import static org.smartregister.chw.anc.util.DBConstants.KEY.LAST_NAME;
 import static org.smartregister.chw.anc.util.DBConstants.KEY.MOTHER_ENTITY_ID;
@@ -539,10 +541,10 @@ public class JsonFormUtils extends org.smartregister.util.JsonFormUtils {
                 List<Object> obsValues = new ArrayList<>();
                 obsValues.add(repeatArray.toString());
                 Obs formattedRepeatObs = new Obs();
-                formattedRepeatObs.setFieldCode("child_repeat_group_values_list");
-                formattedRepeatObs.setFieldDataType("repeatvalueslist");
-                formattedRepeatObs.setFieldType("concept");
-                formattedRepeatObs.setFormSubmissionField("repeatvalueslist");
+                formattedRepeatObs.setFieldCode(CHILD_REPEAT_GROUP_VALUES_LIST);
+                formattedRepeatObs.setFieldDataType(REPEATING_GROUP_FIELD_DATA_TYPE);
+                formattedRepeatObs.setFieldType(CONCEPT);
+                formattedRepeatObs.setFormSubmissionField(REPEATING_GROUP_FIELD_DATA_TYPE);
                 formattedRepeatObs.setSaveObsAsArray(false);
                 formattedRepeatObs.setValues(obsValues);
                 event.addObs(formattedRepeatObs);
