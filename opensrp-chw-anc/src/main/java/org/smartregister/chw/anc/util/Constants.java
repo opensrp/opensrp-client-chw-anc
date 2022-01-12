@@ -17,6 +17,19 @@ public interface Constants {
         String DELETE_FORM_SUBMISSION_ID = "deleted_form_submission_id";
     }
 
+    interface JsonFormKey {
+        String NO_CHILDREN = "no_children_no";
+        String CHK_BCG = "chk_bcg";
+        String BCG_DATE = "bcg_date";
+        String OPV_0_DATE = "opv0_date";
+        String CHILD_REPEAT_GROUP_VALUES_LIST = "child_repeat_group_values_list";
+
+    }
+    interface JsonForm {
+        String REPEATING_GROUP_UNIQUE_ID = "unique_id";
+        String REPEATING_GROUP_FIELD_DATA_TYPE = "repeatvalueslist";
+    }
+
     interface EVENT_TYPE {
         String ANC_REGISTRATION = "Anc Registration";
         String ANC_HOME_VISIT = "ANC Home Visit";
