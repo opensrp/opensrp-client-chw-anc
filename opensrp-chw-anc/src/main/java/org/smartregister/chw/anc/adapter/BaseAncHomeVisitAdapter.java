@@ -12,7 +12,7 @@ import android.widget.TextView;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.smartregister.chw.anc.contract.BaseAncHomeVisitContract;
-import org.smartregister.chw.anc.model.BaseAncHomeVisitAction;
+import org.smartregister.chw.anc.model.BaseHomeVisitAction;
 import org.smartregister.chw.opensrp_chw_anc.R;
 
 import java.text.MessageFormat;
@@ -22,11 +22,11 @@ import java.util.Map;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class BaseAncHomeVisitAdapter extends RecyclerView.Adapter<BaseAncHomeVisitAdapter.MyViewHolder> {
-    private Map<String, BaseAncHomeVisitAction> ancHomeVisitActionList;
+    private Map<String, BaseHomeVisitAction> ancHomeVisitActionList;
     private Context context;
     private BaseAncHomeVisitContract.View visitContractView;
 
-    public BaseAncHomeVisitAdapter(Context context, BaseAncHomeVisitContract.View view, LinkedHashMap<String, BaseAncHomeVisitAction> myDataset) {
+    public BaseAncHomeVisitAdapter(Context context, BaseAncHomeVisitContract.View view, LinkedHashMap<String, BaseHomeVisitAction> myDataset) {
         ancHomeVisitActionList = myDataset;
         this.context = context;
         this.visitContractView = view;
@@ -47,9 +47,9 @@ public class BaseAncHomeVisitAdapter extends RecyclerView.Adapter<BaseAncHomeVis
      * @param position
      * @return
      */
-    private BaseAncHomeVisitAction getByPosition(int position) {
+    private BaseHomeVisitAction getByPosition(int position) {
         int count = -1;
-        for (Map.Entry<String, BaseAncHomeVisitAction> entry : ancHomeVisitActionList.entrySet()) {
+        for (Map.Entry<String, BaseHomeVisitAction> entry : ancHomeVisitActionList.entrySet()) {
             if (entry.getValue().isValid())
                 count++;
 
@@ -64,7 +64,7 @@ public class BaseAncHomeVisitAdapter extends RecyclerView.Adapter<BaseAncHomeVis
     @Override
     public void onBindViewHolder(@NotNull MyViewHolder holder, int position) {
 
-        BaseAncHomeVisitAction ancHomeVisitAction = getByPosition(position);
+        BaseHomeVisitAction ancHomeVisitAction = getByPosition(position);
         if (ancHomeVisitAction == null)
             return;
 
@@ -87,7 +87,7 @@ public class BaseAncHomeVisitAdapter extends RecyclerView.Adapter<BaseAncHomeVis
                 holder.invalidText.setVisibility(View.GONE);
                 holder.descriptionText.setText(ancHomeVisitAction.getSubTitle());
 
-                boolean isOverdue = ancHomeVisitAction.getScheduleStatus() == BaseAncHomeVisitAction.ScheduleStatus.OVERDUE &&
+                boolean isOverdue = ancHomeVisitAction.getScheduleStatus() == BaseHomeVisitAction.ScheduleStatus.OVERDUE &&
                         ancHomeVisitAction.isEnabled();
 
                 holder.descriptionText.setTextColor(
@@ -119,7 +119,7 @@ public class BaseAncHomeVisitAdapter extends RecyclerView.Adapter<BaseAncHomeVis
         bindClickListener(holder.getView(), ancHomeVisitAction);
     }
 
-    private int getCircleColor(BaseAncHomeVisitAction ancHomeVisitAction) {
+    private int getCircleColor(BaseHomeVisitAction ancHomeVisitAction) {
         int color_res;
         boolean valid = ancHomeVisitAction.isValid() && ancHomeVisitAction.isEnabled();
         if (!valid)
@@ -142,7 +142,7 @@ public class BaseAncHomeVisitAdapter extends RecyclerView.Adapter<BaseAncHomeVis
         return color_res;
     }
 
-    private void bindClickListener(View view, final BaseAncHomeVisitAction ancHomeVisitAction) {
+    private void bindClickListener(View view, final BaseHomeVisitAction ancHomeVisitAction) {
         if (!ancHomeVisitAction.isEnabled() || !ancHomeVisitAction.isValid()) {
             view.setOnClickListener(null);
             return;
@@ -161,7 +161,7 @@ public class BaseAncHomeVisitAdapter extends RecyclerView.Adapter<BaseAncHomeVis
     @Override
     public int getItemCount() {
         int count = 0;
-        for (Map.Entry<String, BaseAncHomeVisitAction> entry : ancHomeVisitActionList.entrySet()) {
+        for (Map.Entry<String, BaseHomeVisitAction> entry : ancHomeVisitActionList.entrySet()) {
             if (entry.getValue().isValid())
                 count++;
         }

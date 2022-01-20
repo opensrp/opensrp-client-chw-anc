@@ -18,28 +18,28 @@ import static com.vijay.jsonwizard.utils.NativeFormLangUtils.getTranslatedString
 /**
  * This action list allows users to either load a form or link it to a separate fragment.
  */
-public class BaseAncHomeVisitAction {
+public class BaseHomeVisitAction {
 
-    private String baseEntityID;
-    private String title;
-    private String subTitle;
-    private String disabledMessage;
-    private Status actionStatus;
-    private PayloadType payloadType;
-    private String payloadDetails;
-    private ScheduleStatus scheduleStatus;
-    private ProcessingMode processingMode;
-    private boolean optional;
-    private BaseHomeVisitFragment destinationFragment;
-    private String formName;
-    private String jsonPayload;
-    private String selectedOption;
-    private AncHomeVisitActionHelper ancHomeVisitActionHelper;
-    private Map<String, List<VisitDetail>> details;
-    private Context context;
-    private Validator validator;
+    protected String baseEntityID;
+    protected String title;
+    protected String subTitle;
+    protected String disabledMessage;
+    protected Status actionStatus;
+    protected PayloadType payloadType;
+    protected String payloadDetails;
+    protected ScheduleStatus scheduleStatus;
+    protected ProcessingMode processingMode;
+    protected boolean optional;
+    protected BaseHomeVisitFragment destinationFragment;
+    protected String formName;
+    protected String jsonPayload;
+    protected String selectedOption;
+    protected HomeVisitActionHelper homeVisitActionHelper;
+    protected Map<String, List<VisitDetail>> details;
+    protected Context context;
+    protected Validator validator;
 
-    private BaseAncHomeVisitAction(Builder builder) throws ValidationException {
+    protected BaseHomeVisitAction(Builder<?> builder) throws ValidationException {
         this.baseEntityID = builder.baseEntityID;
         this.title = builder.title;
         this.subTitle = builder.subTitle;
@@ -51,7 +51,7 @@ public class BaseAncHomeVisitAction {
         this.optional = builder.optional;
         this.destinationFragment = builder.destinationFragment;
         this.formName = builder.formName;
-        this.ancHomeVisitActionHelper = builder.ancHomeVisitActionHelper;
+        this.homeVisitActionHelper = builder.actionHelper;
         this.details = builder.details;
         this.context = builder.context;
         this.processingMode = builder.processingMode;
@@ -80,9 +80,9 @@ public class BaseAncHomeVisitAction {
                 jsonPayload = jsonObject.toString();
             }
 
-            if (ancHomeVisitActionHelper != null) {
-                ancHomeVisitActionHelper.onJsonFormLoaded(jsonPayload, context, details);
-                String pre_processed = ancHomeVisitActionHelper.getPreProcessed();
+            if (homeVisitActionHelper != null) {
+                homeVisitActionHelper.onJsonFormLoaded(jsonPayload, context, details);
+                String pre_processed = homeVisitActionHelper.getPreProcessed();
                 if (StringUtils.isNotBlank(pre_processed)) {
                     JSONObject jsonObject = new JSONObject(pre_processed);
                     JsonFormUtils.populateForm(jsonObject, details);
@@ -90,12 +90,12 @@ public class BaseAncHomeVisitAction {
                     this.jsonPayload = jsonObject.toString();
                 }
 
-                String sub_title = ancHomeVisitActionHelper.getPreProcessedSubTitle();
+                String sub_title = homeVisitActionHelper.getPreProcessedSubTitle();
                 if (StringUtils.isNotBlank(sub_title)) {
                     this.subTitle = sub_title;
                 }
 
-                ScheduleStatus status = ancHomeVisitActionHelper.getPreProcessedStatus();
+                ScheduleStatus status = homeVisitActionHelper.getPreProcessedStatus();
                 if (status != null) {
                     this.scheduleStatus = status;
                 }
@@ -154,11 +154,7 @@ public class BaseAncHomeVisitAction {
     }
 
     public String getSubTitle() {
-        if(ancHomeVisitActionHelper != null){
-            return StringUtils.isNotBlank(ancHomeVisitActionHelper.evaluateSubTitle()) ? ancHomeVisitActionHelper.evaluateSubTitle() : ancHomeVisitActionHelper.getPreProcessedSubTitle();
-        }else{
-            return subTitle;
-        }
+        return subTitle;
     }
 
     public void setSubTitle(String subTitle) {
@@ -240,22 +236,22 @@ public class BaseAncHomeVisitAction {
     }
 
     private void onPayloadReceivedNotifyHelper(String jsonPayload) {
-        if (ancHomeVisitActionHelper == null)
+        if (homeVisitActionHelper == null)
             return;
 
-        ancHomeVisitActionHelper.onPayloadReceived(jsonPayload);
+        homeVisitActionHelper.onPayloadReceived(jsonPayload);
 
-        String sub_title = ancHomeVisitActionHelper.evaluateSubTitle();
+        String sub_title = homeVisitActionHelper.evaluateSubTitle();
         if (sub_title != null) {
             setSubTitle(sub_title);
         }
 
-        String post_process = ancHomeVisitActionHelper.postProcess(jsonPayload);
+        String post_process = homeVisitActionHelper.postProcess(jsonPayload);
         if (post_process != null) {
-            this.jsonPayload = ancHomeVisitActionHelper.postProcess(jsonPayload);
+            this.jsonPayload = homeVisitActionHelper.postProcess(jsonPayload);
         }
 
-        ancHomeVisitActionHelper.onPayloadReceived(this);
+        homeVisitActionHelper.onPayloadReceived(this);
     }
 
     public void setProcessedJsonPayload(String jsonPayload) {
@@ -286,12 +282,12 @@ public class BaseAncHomeVisitAction {
         this.selectedOption = selectedOption;
     }
 
-    public AncHomeVisitActionHelper getAncHomeVisitActionHelper() {
-        return ancHomeVisitActionHelper;
+    public HomeVisitActionHelper getHomeVisitActionHelper() {
+        return homeVisitActionHelper;
     }
 
-    public void setAncHomeVisitActionHelper(AncHomeVisitActionHelper ancHomeVisitActionHelper) {
-        this.ancHomeVisitActionHelper = ancHomeVisitActionHelper;
+    public void setHomeVisitActionHelper(HomeVisitActionHelper homeVisitActionHelper) {
+        this.homeVisitActionHelper = homeVisitActionHelper;
     }
 
     /**
@@ -301,12 +297,12 @@ public class BaseAncHomeVisitAction {
     public void evaluateStatus() {
         setActionStatus(computedStatus());
 
-        if (getAncHomeVisitActionHelper() != null) {
-            setActionStatus(getAncHomeVisitActionHelper().evaluateStatusOnPayload());
+        if (getHomeVisitActionHelper() != null) {
+            setActionStatus(getHomeVisitActionHelper().evaluateStatusOnPayload());
         }
     }
 
-    public BaseAncHomeVisitAction.Status computedStatus() {
+    public BaseHomeVisitAction.Status computedStatus() {
         if (StringUtils.isNotBlank(getJsonPayload())) {
             return Status.COMPLETED;
         } else {
@@ -325,7 +321,7 @@ public class BaseAncHomeVisitAction {
      */
     public enum ProcessingMode {COMBINED, SEPARATE}
 
-    public interface AncHomeVisitActionHelper {
+    public interface HomeVisitActionHelper {
 
         /**
          * Inject values to the json form before rendering
@@ -380,10 +376,10 @@ public class BaseAncHomeVisitAction {
         /**
          * Custom processing after payload is received
          */
-        void onPayloadReceived(BaseAncHomeVisitAction ancHomeVisitAction);
+        void onPayloadReceived(BaseHomeVisitAction baseHomeVisitAction);
     }
 
-    public static class Builder {
+    public abstract static class Builder<T extends Builder<T>> {
         private String baseEntityID;
         private String title;
         private String subTitle;
@@ -396,7 +392,7 @@ public class BaseAncHomeVisitAction {
         private boolean optional = true;
         private BaseHomeVisitFragment destinationFragment;
         private String formName;
-        private AncHomeVisitActionHelper ancHomeVisitActionHelper;
+        private HomeVisitActionHelper actionHelper;
         private Map<String, List<VisitDetail>> details = new HashMap<>();
         private Context context;
         private String jsonPayload;
@@ -407,78 +403,80 @@ public class BaseAncHomeVisitAction {
             this.title = title;
         }
 
-        public Builder withBaseEntityID(String baseEntityID) {
+        public abstract T getThis();
+
+        public T withBaseEntityID(String baseEntityID) {
             this.baseEntityID = baseEntityID;
-            return this;
+            return getThis();
         }
 
-        public Builder withSubtitle(String subTitle) {
+        public T withSubtitle(String subTitle) {
             this.subTitle = subTitle;
-            return this;
+            return getThis();
         }
 
-        public Builder withDisabledMessage(String disabledMessage) {
+        public T withDisabledMessage(String disabledMessage) {
             this.disabledMessage = disabledMessage;
-            return this;
+            return getThis();
         }
 
-        public Builder withPayloadType(PayloadType payloadType) {
+        public T withPayloadType(PayloadType payloadType) {
             this.payloadType = payloadType;
-            return this;
+            return getThis();
         }
 
-        public Builder withPayloadDetails(String payloadDetails) {
+        public T withPayloadDetails(String payloadDetails) {
             this.payloadDetails = payloadDetails;
-            return this;
+            return getThis();
         }
 
-        public Builder withOptional(boolean optional) {
+        public T withOptional(boolean optional) {
             this.optional = optional;
-            return this;
+            return getThis();
         }
 
-        public Builder withDestinationFragment(BaseHomeVisitFragment destinationFragment) {
+        public T withDestinationFragment(BaseHomeVisitFragment destinationFragment) {
             this.destinationFragment = destinationFragment;
-            return this;
+            return getThis();
         }
 
-        public Builder withFormName(String formName) {
+        public T withFormName(String formName) {
             this.formName = formName;
-            return this;
+            return getThis();
         }
 
-        public Builder withDetails(Map<String, List<VisitDetail>> details) {
+        public T withDetails(Map<String, List<VisitDetail>> details) {
             this.details = details;
-            return this;
+            return getThis();
         }
 
-        public Builder withHelper(AncHomeVisitActionHelper ancHomeVisitActionHelper) {
-            this.ancHomeVisitActionHelper = ancHomeVisitActionHelper;
-            return this;
+        public T withHelper(HomeVisitActionHelper homeVisitActionHelper) {
+            this.actionHelper = homeVisitActionHelper;
+            return getThis();
         }
 
-        public Builder withScheduleStatus(ScheduleStatus scheduleStatus) {
+        public T withScheduleStatus(ScheduleStatus scheduleStatus) {
             this.scheduleStatus = scheduleStatus;
-            return this;
+            return getThis();
         }
 
-        public Builder withProcessingMode(ProcessingMode processingMode) {
+        public T withProcessingMode(ProcessingMode processingMode) {
             this.processingMode = processingMode;
-            return this;
+            return getThis();
         }
 
-        public Builder withJsonPayload(String jsonPayload) {
+        public T withJsonPayload(String jsonPayload) {
             this.jsonPayload = jsonPayload;
-            return this;
+            return getThis();
         }
 
-        public Builder withValidator(Validator validator) {
+        public T withValidator(Validator validator) {
             this.validator = validator;
-            return this;
+            return getThis();
         }
 
-        public BaseAncHomeVisitAction build() throws ValidationException {
-            return new BaseAncHomeVisitAction(this);
+        public BaseHomeVisitAction build() throws ValidationException {
+            return new BaseHomeVisitAction(this);
         }
     }
 
