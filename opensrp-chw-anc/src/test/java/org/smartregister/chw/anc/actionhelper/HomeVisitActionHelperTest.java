@@ -6,7 +6,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.smartregister.chw.anc.BaseUnitTest;
-import org.smartregister.chw.anc.model.BaseAncHomeVisitAction;
+import org.smartregister.chw.anc.model.BaseHomeVisitAction;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -38,7 +38,7 @@ public class HomeVisitActionHelperTest extends BaseUnitTest {
 
     @Test
     public void testGetPreProcessedStatus() {
-        assertEquals(BaseAncHomeVisitAction.ScheduleStatus.DUE, helper.getPreProcessedStatus());
+        assertEquals(BaseHomeVisitAction.ScheduleStatus.DUE, helper.getPreProcessedStatus());
     }
 
     @Test
@@ -54,7 +54,7 @@ public class HomeVisitActionHelperTest extends BaseUnitTest {
     @Test
     public void testOnPayloadReceived() {
 
-        BaseAncHomeVisitAction action = Mockito.mock(BaseAncHomeVisitAction.class);
+        BaseHomeVisitAction action = Mockito.mock(BaseHomeVisitAction.class);
         int hashCode = action.hashCode();
 
         helper.onPayloadReceived(action);

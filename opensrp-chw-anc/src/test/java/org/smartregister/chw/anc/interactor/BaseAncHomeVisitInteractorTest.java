@@ -12,6 +12,7 @@ import org.smartregister.chw.anc.AncLibrary;
 import org.smartregister.chw.anc.contract.BaseAncHomeVisitContract;
 import org.smartregister.chw.anc.domain.MemberObject;
 import org.smartregister.chw.anc.model.BaseAncHomeVisitAction;
+import org.smartregister.chw.anc.model.BaseHomeVisitAction;
 import org.smartregister.chw.anc.util.AppExecutors;
 import org.smartregister.sync.helper.ECSyncHelper;
 

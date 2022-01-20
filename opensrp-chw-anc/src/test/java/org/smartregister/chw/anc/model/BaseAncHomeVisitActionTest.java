@@ -27,7 +27,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
 @PrepareForTest(FormUtils.class)
-public class BaseAncHomeVisitActionTest extends BaseUnitTest {
+public class BaseAncHomeVisitActionTest {
     @Rule
     public PowerMockRule rule = new PowerMockRule();
 
@@ -126,7 +126,7 @@ public class BaseAncHomeVisitActionTest extends BaseUnitTest {
         Context context = RuntimeEnvironment.application;
         Map<String, List<VisitDetail>> details = new HashMap<>();
 
-        BaseAncHomeVisitAction.AncHomeVisitActionHelper homeVisitActionHelper = Mockito.mock(BaseAncHomeVisitAction.AncHomeVisitActionHelper.class);
+        BaseAncHomeVisitAction.HomeVisitActionHelper homeVisitActionHelper = Mockito.mock(BaseAncHomeVisitAction.HomeVisitActionHelper.class);
         String title = "Visit title";
         String subTitle = "Hello";
         String formName = "danger_signs";

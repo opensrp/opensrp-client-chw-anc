@@ -15,6 +15,7 @@ import org.smartregister.chw.anc.BaseUnitTest;
 import org.smartregister.chw.anc.contract.BaseAncHomeVisitContract;
 import org.smartregister.chw.anc.domain.MemberObject;
 import org.smartregister.chw.anc.model.BaseAncHomeVisitAction;
+import org.smartregister.chw.anc.model.BaseHomeVisitAction;
 import org.smartregister.util.FormUtils;
 
 import java.util.HashMap;
