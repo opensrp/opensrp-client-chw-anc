@@ -7,6 +7,7 @@ import org.smartregister.chw.anc.contract.BaseAncHomeVisitContract;
 import org.smartregister.chw.anc.domain.MemberObject;
 import org.smartregister.chw.anc.interactor.BaseAncHomeVisitInteractor;
 import org.smartregister.chw.anc.model.BaseAncHomeVisitAction;
+import org.smartregister.chw.anc.model.BaseHomeVisitAction;
 import org.smartregister.chw.anc_sample.R;
 import org.smartregister.chw.anc_sample.activity.EntryActivity;
 import org.smartregister.chw.anc_sample.utils.Constants;
