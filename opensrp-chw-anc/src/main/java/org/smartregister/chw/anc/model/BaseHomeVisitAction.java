@@ -1,8 +1,11 @@
 package org.smartregister.chw.anc.model;
 
+import static com.vijay.jsonwizard.utils.NativeFormLangUtils.getTranslatedString;
+
 import android.content.Context;
 
 import org.apache.commons.lang3.StringUtils;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.smartregister.chw.anc.domain.VisitDetail;
 import org.smartregister.chw.anc.fragment.BaseHomeVisitFragment;
@@ -12,8 +15,6 @@ import org.smartregister.util.FormUtils;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static com.vijay.jsonwizard.utils.NativeFormLangUtils.getTranslatedString;
 
 /**
  * This action list allows users to either load a form or link it to a separate fragment.
@@ -72,45 +73,56 @@ public class BaseHomeVisitAction {
                     e.printStackTrace();
                 }
 
-                // update the form details
-                if (details != null && details.size() > 0) {
-                    JsonFormUtils.populateForm(jsonObject, details);
-                }
-
+                updateFormDetails(jsonObject, details);
                 jsonPayload = jsonObject.toString();
             }
 
-            if (homeVisitActionHelper != null) {
-                homeVisitActionHelper.onJsonFormLoaded(jsonPayload, context, details);
-                String pre_processed = homeVisitActionHelper.getPreProcessed();
-                if (StringUtils.isNotBlank(pre_processed)) {
-                    JSONObject jsonObject = new JSONObject(pre_processed);
-                    JsonFormUtils.populateForm(jsonObject, details);
-
-                    this.jsonPayload = jsonObject.toString();
-                }
-
-                String sub_title = homeVisitActionHelper.getPreProcessedSubTitle();
-                if (StringUtils.isNotBlank(sub_title)) {
-                    this.subTitle = sub_title;
-                }
-
-                ScheduleStatus status = homeVisitActionHelper.getPreProcessedStatus();
-                if (status != null) {
-                    this.scheduleStatus = status;
-                }
-            }
+            updateActionWithPreprocessedDetails(homeVisitActionHelper, jsonPayload, context, details);
 
             if (details != null && details.size() > 0) {
-                if (destinationFragment != null) {
-                    setJsonPayload(destinationFragment.getJsonObject().toString()); // force reload
-                } else {
-                    setJsonPayload(this.jsonPayload); // force reload
-                }
+                updateJsonPayload(destinationFragment);
             }
 
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    private void updateFormDetails(JSONObject jsonObject, Map<String, List<VisitDetail>> details) {
+        if (details != null && details.size() > 0) {
+            JsonFormUtils.populateForm(jsonObject, details);
+        }
+    }
+
+    private void updateJsonPayload(BaseHomeVisitFragment destinationFragment) {
+        if (destinationFragment != null) {
+            setJsonPayload(destinationFragment.getJsonObject().toString()); // force reload
+        } else {
+            setJsonPayload(this.jsonPayload); // force reload
+        }
+    }
+
+    private void updateActionWithPreprocessedDetails(HomeVisitActionHelper homeVisitActionHelper, String jsonPayload,
+                                          Context context, Map<String, List<VisitDetail>> details) throws JSONException {
+        if (homeVisitActionHelper != null) {
+            homeVisitActionHelper.onJsonFormLoaded(jsonPayload, context, details);
+            String pre_processed = homeVisitActionHelper.getPreProcessed();
+            if (StringUtils.isNotBlank(pre_processed)) {
+                JSONObject jsonObject = new JSONObject(pre_processed);
+                updateFormDetails(jsonObject, details);
+
+                this.jsonPayload = jsonObject.toString();
+            }
+
+            String sub_title = homeVisitActionHelper.getPreProcessedSubTitle();
+            if (StringUtils.isNotBlank(sub_title)) {
+                this.subTitle = sub_title;
+            }
+
+            ScheduleStatus status = homeVisitActionHelper.getPreProcessedStatus();
+            if (status != null) {
+                this.scheduleStatus = status;
+            }
         }
     }
 
@@ -379,6 +391,26 @@ public class BaseHomeVisitAction {
         void onPayloadReceived(BaseHomeVisitAction baseHomeVisitAction);
     }
 
+    /**
+     * provides complex logic to validate is an object should be displayed
+     * and the state it should be displated
+     *
+     * @return
+     */
+    public interface Validator {
+        boolean isValid(String key);
+
+        boolean isEnabled(String key);
+
+        /**
+         * notifies the validator that a change has occurred on this object
+         *
+         * @param key
+         * @return
+         */
+        void onChanged(String key);
+    }
+
     public abstract static class Builder<T extends Builder<T>> {
         private String baseEntityID;
         private String title;
@@ -484,25 +516,5 @@ public class BaseHomeVisitAction {
         public ValidationException(String message) {
             super(message);
         }
-    }
-
-    /**
-     * provides complex logic to validate is an object should be displayed
-     * and the state it should be displated
-     *
-     * @return
-     */
-    public interface Validator {
-        boolean isValid(String key);
-
-        boolean isEnabled(String key);
-
-        /**
-         * notifies the validator that a change has occurred on this object
-         *
-         * @param key
-         * @return
-         */
-        void onChanged(String key);
     }
 }
