@@ -3,7 +3,6 @@ package org.smartregister.chw.anc.actionhelper;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
 import org.smartregister.chw.anc.model.BaseAncHomeVisitAction;
-import org.smartregister.chw.anc.model.BaseHomeVisitAction;
 import org.smartregister.chw.anc.util.JsonFormUtils;
 import org.smartregister.chw.opensrp_chw_anc.R;
 
