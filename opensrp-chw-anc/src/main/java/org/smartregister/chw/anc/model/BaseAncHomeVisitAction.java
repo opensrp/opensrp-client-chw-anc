@@ -8,11 +8,6 @@ public class BaseAncHomeVisitAction extends BaseHomeVisitAction {
         super(builder);
     }
 
-    @Override
-    public String getSubTitle() {
-        return subTitle;
-    }
-
     public static class Builder extends BaseHomeVisitAction.Builder<Builder> {
 
         public Builder(Context context, String title) {
