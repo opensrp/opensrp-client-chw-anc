@@ -27,6 +27,7 @@ import org.smartregister.chw.anc.contract.BaseAncHomeVisitContract;
 import org.smartregister.chw.anc.domain.MemberObject;
 import org.smartregister.chw.anc.interactor.BaseAncHomeVisitInteractor;
 import org.smartregister.chw.anc.model.BaseAncHomeVisitAction;
+import org.smartregister.chw.anc.model.BaseHomeVisitAction;
 import org.smartregister.chw.anc.presenter.BaseAncHomeVisitPresenter;
 import org.smartregister.chw.anc.util.Constants;
 import org.smartregister.chw.opensrp_chw_anc.R;
@@ -178,7 +179,7 @@ public class BaseAncHomeVisitActivity extends SecuredActivity implements BaseAnc
     }
 
     @Override
-    public void startForm(BaseAncHomeVisitAction ancHomeVisitAction) {
+    public void startForm(BaseHomeVisitAction ancHomeVisitAction) {
         current_action = ancHomeVisitAction.getTitle();
 
         if (StringUtils.isNotBlank(ancHomeVisitAction.getJsonPayload())) {
@@ -209,7 +210,7 @@ public class BaseAncHomeVisitActivity extends SecuredActivity implements BaseAnc
     }
 
     @Override
-    public void startFragment(BaseAncHomeVisitAction ancHomeVisitAction) {
+    public void startFragment(BaseHomeVisitAction ancHomeVisitAction) {
         current_action = ancHomeVisitAction.getTitle();
 
         if (ancHomeVisitAction.getDestinationFragment() != null)
@@ -226,7 +227,7 @@ public class BaseAncHomeVisitActivity extends SecuredActivity implements BaseAnc
     public void redrawVisitUI() {
         boolean valid = actionList.size() > 0;
         for (Map.Entry<String, BaseAncHomeVisitAction> entry : actionList.entrySet()) {
-            BaseAncHomeVisitAction action = entry.getValue();
+            BaseHomeVisitAction action = entry.getValue();
             if (
                     (!action.isOptional() && (action.getActionStatus() == BaseAncHomeVisitAction.Status.PENDING && action.isValid()))
                             || !action.isEnabled()
@@ -277,7 +278,7 @@ public class BaseAncHomeVisitActivity extends SecuredActivity implements BaseAnc
 
     @Override
     public void onDialogOptionUpdated(String jsonString) {
-        BaseAncHomeVisitAction ancHomeVisitAction = actionList.get(current_action);
+        BaseHomeVisitAction ancHomeVisitAction = actionList.get(current_action);
         if (ancHomeVisitAction != null) {
             ancHomeVisitAction.setJsonPayload(jsonString);
         }
@@ -299,7 +300,7 @@ public class BaseAncHomeVisitActivity extends SecuredActivity implements BaseAnc
             if (resultCode == Activity.RESULT_OK) {
                 try {
                     String jsonString = data.getStringExtra(Constants.JSON_FORM_EXTRA.JSON);
-                    BaseAncHomeVisitAction ancHomeVisitAction = actionList.get(current_action);
+                    BaseHomeVisitAction ancHomeVisitAction = actionList.get(current_action);
                     if (ancHomeVisitAction != null) {
                         ancHomeVisitAction.setJsonPayload(jsonString);
                     }
@@ -309,7 +310,7 @@ public class BaseAncHomeVisitActivity extends SecuredActivity implements BaseAnc
                 }
             } else {
 
-                BaseAncHomeVisitAction ancHomeVisitAction = actionList.get(current_action);
+                BaseHomeVisitAction ancHomeVisitAction = actionList.get(current_action);
                 if (ancHomeVisitAction != null)
                     ancHomeVisitAction.evaluateStatus();
             }

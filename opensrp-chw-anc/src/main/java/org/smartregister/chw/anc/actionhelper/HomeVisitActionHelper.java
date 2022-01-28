@@ -3,7 +3,7 @@ package org.smartregister.chw.anc.actionhelper;
 import android.content.Context;
 
 import org.smartregister.chw.anc.domain.VisitDetail;
-import org.smartregister.chw.anc.model.BaseAncHomeVisitAction;
+import org.smartregister.chw.anc.model.BaseHomeVisitAction;
 
 import java.util.List;
 import java.util.Map;
@@ -14,7 +14,7 @@ import timber.log.Timber;
  * Designed to set default methods for the ANCActionHelper
  * This object must remain inert to the Home Visit action. Its designed primarily for extension by simple visit actions
  */
-public abstract class HomeVisitActionHelper implements BaseAncHomeVisitAction.AncHomeVisitActionHelper {
+public abstract class HomeVisitActionHelper implements BaseHomeVisitAction.HomeVisitActionHelper {
     protected Context context;
 
     @Override
@@ -38,8 +38,8 @@ public abstract class HomeVisitActionHelper implements BaseAncHomeVisitAction.An
      * @return null
      */
     @Override
-    public BaseAncHomeVisitAction.ScheduleStatus getPreProcessedStatus() {
-        return BaseAncHomeVisitAction.ScheduleStatus.DUE;
+    public BaseHomeVisitAction.ScheduleStatus getPreProcessedStatus() {
+        return BaseHomeVisitAction.ScheduleStatus.DUE;
     }
 
     /**
@@ -65,10 +65,10 @@ public abstract class HomeVisitActionHelper implements BaseAncHomeVisitAction.An
     /**
      * Do nothing on payload received
      *
-     * @param ancHomeVisitAction
+     * @param baseHomeVisitAction
      */
     @Override
-    public void onPayloadReceived(BaseAncHomeVisitAction ancHomeVisitAction) {
+    public void onPayloadReceived(BaseHomeVisitAction baseHomeVisitAction) {
         Timber.v("onPayloadReceived");
     }
 

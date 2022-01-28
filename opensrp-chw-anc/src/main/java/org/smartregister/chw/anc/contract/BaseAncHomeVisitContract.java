@@ -7,6 +7,7 @@ import com.vijay.jsonwizard.domain.Form;
 import org.json.JSONObject;
 import org.smartregister.chw.anc.domain.MemberObject;
 import org.smartregister.chw.anc.model.BaseAncHomeVisitAction;
+import org.smartregister.chw.anc.model.BaseHomeVisitAction;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -19,11 +20,11 @@ public interface BaseAncHomeVisitContract {
 
         Form getFormConfig();
 
-        void startForm(BaseAncHomeVisitAction ancHomeVisitAction);
+        void startForm(BaseHomeVisitAction ancHomeVisitAction);
 
         void startFormActivity(JSONObject jsonForm);
 
-        void startFragment(BaseAncHomeVisitAction ancHomeVisitAction);
+        void startFragment(BaseHomeVisitAction ancHomeVisitAction);
 
         void redrawHeader(MemberObject memberObject);
 

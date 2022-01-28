@@ -12,7 +12,7 @@ import org.powermock.reflect.Whitebox;
 import org.robolectric.RuntimeEnvironment;
 import org.smartregister.chw.anc.BaseUnitTest;
 import org.smartregister.chw.anc.contract.BaseAncHomeVisitContract;
-import org.smartregister.chw.anc.model.BaseAncHomeVisitAction;
+import org.smartregister.chw.anc.model.BaseHomeVisitAction;
 import org.smartregister.chw.opensrp_chw_anc.R;
 
 import java.util.LinkedHashMap;
@@ -26,7 +26,7 @@ public class BaseAncHomeVisitAdapterTest extends BaseUnitTest {
     private BaseAncHomeVisitContract.View view;
 
     @Mock
-    private LinkedHashMap<String, BaseAncHomeVisitAction> myDataset;
+    private LinkedHashMap<String, BaseHomeVisitAction> myDataset;
 
     private Context context = RuntimeEnvironment.application;
 
@@ -38,10 +38,10 @@ public class BaseAncHomeVisitAdapterTest extends BaseUnitTest {
     @Test
     public void testGetCircleColorComplete() throws Exception {
         BaseAncHomeVisitAdapter ancHomeVisitAdapter = new BaseAncHomeVisitAdapter(context, view, myDataset);
-        BaseAncHomeVisitAction ancHomeVisitAction = Mockito.mock(BaseAncHomeVisitAction.class);
+        BaseHomeVisitAction ancHomeVisitAction = Mockito.mock(BaseHomeVisitAction.class);
         Mockito.doReturn(true).when(ancHomeVisitAction).isEnabled();
         Mockito.doReturn(true).when(ancHomeVisitAction).isValid();
-        Mockito.doReturn(BaseAncHomeVisitAction.Status.COMPLETED).when(ancHomeVisitAction).getActionStatus();
+        Mockito.doReturn(BaseHomeVisitAction.Status.COMPLETED).when(ancHomeVisitAction).getActionStatus();
 
         int res = Whitebox.invokeMethod(ancHomeVisitAdapter, "getCircleColor", ancHomeVisitAction);
         assertEquals(res, R.color.alert_complete_green);
@@ -50,10 +50,10 @@ public class BaseAncHomeVisitAdapterTest extends BaseUnitTest {
     @Test
     public void testGetCircleColorPending() throws Exception {
         BaseAncHomeVisitAdapter ancHomeVisitAdapter = new BaseAncHomeVisitAdapter(context, view, myDataset);
-        BaseAncHomeVisitAction ancHomeVisitAction = Mockito.mock(BaseAncHomeVisitAction.class);
+        BaseHomeVisitAction ancHomeVisitAction = Mockito.mock(BaseHomeVisitAction.class);
         Mockito.doReturn(true).when(ancHomeVisitAction).isEnabled();
         Mockito.doReturn(true).when(ancHomeVisitAction).isValid();
-        Mockito.doReturn(BaseAncHomeVisitAction.Status.PENDING).when(ancHomeVisitAction).getActionStatus();
+        Mockito.doReturn(BaseHomeVisitAction.Status.PENDING).when(ancHomeVisitAction).getActionStatus();
 
         int res = Whitebox.invokeMethod(ancHomeVisitAdapter, "getCircleColor", ancHomeVisitAction);
         assertEquals(res, R.color.transparent_gray);
@@ -62,10 +62,10 @@ public class BaseAncHomeVisitAdapterTest extends BaseUnitTest {
     @Test
     public void testGetCircleColorPartial() throws Exception {
         BaseAncHomeVisitAdapter ancHomeVisitAdapter = new BaseAncHomeVisitAdapter(context, view, myDataset);
-        BaseAncHomeVisitAction ancHomeVisitAction = Mockito.mock(BaseAncHomeVisitAction.class);
+        BaseHomeVisitAction ancHomeVisitAction = Mockito.mock(BaseHomeVisitAction.class);
         Mockito.doReturn(true).when(ancHomeVisitAction).isEnabled();
         Mockito.doReturn(true).when(ancHomeVisitAction).isValid();
-        Mockito.doReturn(BaseAncHomeVisitAction.Status.PARTIALLY_COMPLETED).when(ancHomeVisitAction).getActionStatus();
+        Mockito.doReturn(BaseHomeVisitAction.Status.PARTIALLY_COMPLETED).when(ancHomeVisitAction).getActionStatus();
 
         int res = Whitebox.invokeMethod(ancHomeVisitAdapter, "getCircleColor", ancHomeVisitAction);
         assertEquals(res, R.color.pnc_circle_yellow);
@@ -75,7 +75,7 @@ public class BaseAncHomeVisitAdapterTest extends BaseUnitTest {
     public void testBindClickListenerOnValidObject() throws Exception {
         BaseAncHomeVisitAdapter ancHomeVisitAdapter = new BaseAncHomeVisitAdapter(context, view, myDataset);
         View view = Mockito.mock(View.class);
-        BaseAncHomeVisitAction ancHomeVisitAction = Mockito.mock(BaseAncHomeVisitAction.class);
+        BaseHomeVisitAction ancHomeVisitAction = Mockito.mock(BaseHomeVisitAction.class);
         Mockito.doReturn(true).when(ancHomeVisitAction).isValid();
         Mockito.doReturn(true).when(ancHomeVisitAction).isEnabled();
 
@@ -91,11 +91,11 @@ public class BaseAncHomeVisitAdapterTest extends BaseUnitTest {
         assertEquals(10, ancHomeVisitAdapter.getItemCount());
     }
 
-    private LinkedHashMap<String, BaseAncHomeVisitAction> generateActions(int count) {
-        LinkedHashMap<String, BaseAncHomeVisitAction> map = new LinkedHashMap<>();
+    private LinkedHashMap<String, BaseHomeVisitAction> generateActions(int count) {
+        LinkedHashMap<String, BaseHomeVisitAction> map = new LinkedHashMap<>();
         int x = 0;
         while (count > x) {
-            BaseAncHomeVisitAction action = Mockito.mock(BaseAncHomeVisitAction.class);
+            BaseHomeVisitAction action = Mockito.mock(BaseHomeVisitAction.class);
             Mockito.doReturn(true).when(action).isValid();
             map.put(String.valueOf(x), action);
             x++;
