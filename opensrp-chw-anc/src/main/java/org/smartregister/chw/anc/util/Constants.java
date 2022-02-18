@@ -6,6 +6,7 @@ public interface Constants {
     int REQUEST_CODE_HOME_VISIT = 3344;
     String ENCOUNTER_TYPE = "encounter_type";
     String HOME_VISIT_GROUP = "home_visit_group";
+    String PREG_OUTCOME_FORM_SUBMISSION_ID = "preg_outcome_form_submission_id";
 
     interface JSON_FORM_EXTRA {
         String JSON = "json";
@@ -36,6 +37,7 @@ public interface Constants {
         String ANC_HOME_VISIT_NOT_DONE = "ANC Home Visit Not Done";
         String ANC_HOME_VISIT_NOT_DONE_UNDO = "ANC Home Visit Not Done Undo";
         String PNC_REGISTRATION = "PNC Registration";
+        String PNC_CHILD_REGISTRATION = "PNC Child Registration";
         String PNC_HOME_VISIT = "PNC Home Visit";
         String PNC_HOME_VISIT_NOT_DONE = "PNC Home Visit Not Done";
         String PNC_HOME_VISIT_NOT_DONE_UNDO = "PNC Home Visit Not Done Undo";

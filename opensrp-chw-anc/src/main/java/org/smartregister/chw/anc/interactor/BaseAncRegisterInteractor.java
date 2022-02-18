@@ -5,6 +5,7 @@ import static org.smartregister.AllConstants.Immunizations.OPV_0;
 import static org.smartregister.chw.anc.util.Constants.JsonFormKey.BCG_DATE;
 import static org.smartregister.chw.anc.util.Constants.JsonFormKey.CHK_BCG;
 import static org.smartregister.chw.anc.util.Constants.JsonFormKey.OPV_0_DATE;
+import static org.smartregister.chw.anc.util.Constants.PREG_OUTCOME_FORM_SUBMISSION_ID;
 import static org.smartregister.chw.anc.util.Constants.TABLES.EC_CHILD;
 import static org.smartregister.util.JsonFormUtils.VALUE;
 import static org.smartregister.util.JsonFormUtils.getFieldJSONObject;
@@ -49,6 +50,7 @@ public class BaseAncRegisterInteractor implements BaseAncRegisterContract.Intera
 
     protected AppExecutors appExecutors;
     protected BaseAncRegisterContract.Model model;
+    private String pregOutcomeFormSubmissionId;
 
     @VisibleForTesting
     BaseAncRegisterInteractor(AppExecutors appExecutors) {
@@ -261,7 +263,7 @@ public class BaseAncRegisterInteractor implements BaseAncRegisterContract.Intera
                 pncForm = JsonFormUtils.populatePNCForm(pncForm, childFields, familyBaseEntityId, motherBaseId, uniqueChildID, dob, lastName);
                 processPncChild(childFields, allSharedPreferences, childBaseEntityId, familyBaseEntityId, motherBaseId, uniqueChildID, lastName, dob);
                 if (pncForm != null) {
-                    saveRegistration(pncForm.toString(), EC_CHILD);
+                    saveRegistration(pncForm.toString(), EC_CHILD, Constants.EVENT_TYPE.PNC_CHILD_REGISTRATION);
                     saveVaccineEvents(childFields, childBaseEntityId, dob);
                 }
 
@@ -297,9 +299,21 @@ public class BaseAncRegisterInteractor implements BaseAncRegisterContract.Intera
 
         if (Constants.EVENT_TYPE.PREGNANCY_OUTCOME.equals(encounterType)) {
             JsonFormUtils.updatePregnancyOutcomeEventObs(jsonString, baseEvent);
+            setPregOutcomeFormSubmissionId(baseEvent.getFormSubmissionId());
+        }
+        if (Constants.EVENT_TYPE.PNC_CHILD_REGISTRATION.equals(encounterType)) {
+            baseEvent.addDetails(PREG_OUTCOME_FORM_SUBMISSION_ID, getPregOutcomeFormSubmissionId());
         }
         NCUtils.addEvent(allSharedPreferences, baseEvent);
         NCUtils.startClientProcessing();
+    }
+
+    private String getPregOutcomeFormSubmissionId() {
+        return this.pregOutcomeFormSubmissionId;
+    }
+
+    private void setPregOutcomeFormSubmissionId(String formSubmissionId) {
+        this.pregOutcomeFormSubmissionId = formSubmissionId;
     }
 
     public void processPncChild(JSONArray fields, AllSharedPreferences allSharedPreferences, String entityId, String familyBaseEntityId, String motherBaseId, String uniqueChildID, String lastName, String dob) {
@@ -324,6 +338,7 @@ public class BaseAncRegisterInteractor implements BaseAncRegisterContract.Intera
             Timber.e(e);
         }
     }
+
 }
 
 
