@@ -1,0 +1,132 @@
+<resources>
+    <string name="app_name">Cuidado pré-natal OpenSRP </string>
+
+    <string name="error_unable_to_start_form">Um erro aconteceu ao iniciar o formulário</string>
+    <string name="error_unable_save_home_visit">Um erro aconteceu ao salvar </string>
+    <string name="anc">Clientes do Prá-Natal</string>
+
+    <!-- menu -->
+    <string name="add_member">Adicionar Membro</string>
+    <string name="sort">Ordenar</string>
+    <string name="home">Domicílio</string>
+    <string name="add_family">Adicionar familiar</string>
+    <string name="scan_qr">Escanear QR Code</string>
+    <string name="job_aids">Ajuda de trabalho</string>
+
+    <!-- register details -->
+    <string name="age">Idade</string>
+    <string name="weeks">Semanas</string>
+    <string name="gestation_age_initial">IG</string>
+
+    <!-- other -->
+    <string name="saving_dialog_title">Salvando</string>
+
+    <!-- anc home visit -->
+    <string name="optional">opcional</string>
+    <string name="anc_visit">Visita de Pré-natal</string>
+    <string name="anc_home_visit">Visita domiciliar</string>
+    <string name="dose_not_given">DOSE NÃO REALIZADA</string>
+
+
+    <string name="return_to_family_members">Voltar para membros da família</string>
+    <string name="return_to_all_anc_women">Retornar para lista de todas mulheres do pré-natal</string>
+    <string name="record_pnc_visit">Registrar Visita de Pré-natal</string>
+    <string name="record_anc_visit">Registrar Visita de Pré-natal</string>
+    <string name="visit_not_done_btn_child_profile">Visita não realizada</string>
+    <string name="not_visiting_this_month">Sem visita nesse mês</string>
+    <string name="undo">DESFAZER</string>
+    <string name="edit">EDITAR</string>
+
+    <string name="unique_id_text">ID:%1$s</string>
+    <string name="gravida_text">Gestante%1$s</string>
+
+    <string name="confirm_form_close">Confirme fechamento do formulário</string>
+    <string name="confirm_form_close_explanation">Tem certeza que quer voltar? Todos os dados inseridos nesse formulário serão apagados</string>
+
+    <!-- anc profile -->
+    <string name="gest_age">IG:%1$s</string>
+    <string name="gest_age_weeks">semanas</string>
+
+    <string name="call_anc_woman">Ligar para mulher</string>
+    <string name="call_pnc_woman">Ligar para mulher</string>
+    <string name="anc_call">Ligar</string>
+    <string name="copy_to_clipboard">Copiar para clipboard</string>
+    <string name="copied_phone_number">Número de telefone copiado para clipboard</string>
+    <string name="head_of_family">Chefe de família</string>
+    <string name="anc_woman">Mulher do pré-natal</string>
+
+    <string name="last_visit_40_days_ago">Última visita%1$s</string>
+    <string name="days">dias</string>
+    <string name="view_medical_history">Ver histórico médico</string>
+    <string name="view_upcoming_services">Ver os próximos serviços</string>
+    <string name="family_has_nothing_due">Família não tem nada atrasado</string>
+    <string name="go_to_family_s_profile">Ir para perfil da família</string>
+    <string name="family_has_services_due">Família ter serviços atrasados</string>
+    <string name="family_has_service_overdue"><![CDATA[Família tem <font color=#FF0000>serviços atrasados</font></b>]]></string>
+    <string name="vaccine_service_upcoming"><![CDATA[%1$s <font color=#7f7f7f>próximos (%2$s)</font></b>]]></string>
+    <string name="vaccine_service_overdue"><![CDATA[%1$s<font color=#f04646> atrasado (%2$s)</font></b>]]></string>
+    <string name="vaccine_service_due"><![CDATA[%1$s<font color=#000000>vencimento (%2$s)</b>]]></string>
+
+    <string name="back_to">De volta para o perfil%1$s</string>
+    <string name="days_overdue">%1$sdias atrasados</string>
+    <string name="days_until_due">%1$sdias até o vencimento</string>
+    <string name="days_due">%1$sdias vencidos</string>
+    <string name="anc_visit_done">%1$svisita realizada</string>
+    <string name="less_than_twenty_four">menos de 24 horas</string>
+    <string name="primary_care_giver">Cuidador primário</string>
+    <string name="family_head">Chefe de família</string>
+
+    <string name="anc_home_visit_danger_signs">Sinais de alerta</string>
+    <string name="danger_signs_counselling">Aconselhamento sobre sinais de alerta</string>
+    <string name="not_done">Não realizado</string>
+    <string name="medical_history">Histórico de saúde</string>
+    <string name="upcoming_services">Próximos Serviços</string>
+
+    <string name="vaccines_not_done">VACINAS NÃO REALIZADAS</string>
+    <string name="add_date_separately">+ ADICIONAR DATA PARA CADA VACINA</string>
+    <string name="when_vaccines_given_text">Quando as vacinas foram feitas?</string>
+    <string name="which_vaccines_given_text">Quais vacinas foram feitas?</string>
+    <string name="record_vaccinations">Registre as vacinas</string>
+
+
+    <string name="when_vaccine">Quando a imunização%s foi realizada?</string>
+    <string name="no_vaccines_were_done">Nenhuma vacina foi realizada</string>
+
+    <string name="opv_0">OPV 0</string>
+    <string name="opv_1">OPV 1</string>
+    <string name="opv_2">OPV 2</string>
+    <string name="opv_3">OPV 3</string>
+    <string name="bcg">BCG</string>
+    <string name="penta_1">Penta 1</string>
+    <string name="penta_2">Penta 2</string>
+    <string name="penta_3">Penta 3</string>
+    <string name="pcv_1">PCV 1</string>
+    <string name="pcv_2">PCV 2</string>
+    <string name="pcv_3">PCV 3</string>
+    <string name="rota_1">Rota 1</string>
+    <string name="rota_2">Rota 2</string>
+    <string name="rota_3">Rota 3</string>
+    <string name="ipv">Violência entre parceiro íntimos</string>
+    <string name="mcv_1">MCV 1</string>
+    <string name="mcv_2">MCV 2</string>
+    <string name="mcv_3">MCV 3</string>
+    <string name="yellow_fever">Febre amarela</string>
+    <string name="rubella_1">Rubéola 1</string>
+    <string name="rubella_2">Rubéola 2</string>
+    <string name="mena">MenA</string>
+
+
+    <!-- Emergency Transport-->
+    <string name="family_location">Ver localização do domicílio</string>
+    <string name="default_pregnancy_risk_text">Risco pré-definido</string>
+    <string name="low_pregnancy_risk">Baixo risco</string>
+    <string name="medium_pregnancy_risk">Médio risco</string>
+    <string name="high_pregnancy_risk">Alto risco</string>
+    <string name="call_community_responder">Ligar para responsável da comunidade</string>
+    <string name="community_responder">Responsável da comunidade</string>
+    <string name="anc_yes">Sim</string>
+    <string name="anc_no">ão</string>
+    <string name="basic_services_provided">Serviços básicos fornecidos:%1$s</string>
+    <string name="cEmONC">CEmONC: %1$s</string>
+    <string name="facility_ownership">Propriedade:%1$s</string>
+</resources>
