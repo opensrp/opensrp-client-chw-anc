@@ -16,6 +16,7 @@ import com.vijay.jsonwizard.constants.JsonFormConstants;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Triple;
 import org.jetbrains.annotations.Nullable;
+import org.joda.time.LocalDate;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -27,12 +28,18 @@ import org.smartregister.domain.tag.FormTag;
 import org.smartregister.immunization.domain.ServiceRecord;
 import org.smartregister.immunization.domain.Vaccine;
 import org.smartregister.repository.AllSharedPreferences;
+import org.smartregister.util.DateUtil;
 
 import java.text.MessageFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 
@@ -40,6 +47,8 @@ import timber.log.Timber;
 
 public class JsonFormUtils extends org.smartregister.util.JsonFormUtils {
     public static final String METADATA = "metadata";
+    public static final String START = "start";
+    public static final String END = "end";
     public static final String IMAGE = "image";
     public static final String HOME_VISIT_GROUP = "home_visit_group";
     private static final String V_REQUIRED = "v_required";
@@ -73,6 +82,8 @@ public class JsonFormUtils extends org.smartregister.util.JsonFormUtils {
 
             if (metadata == null) {
                 metadata = getJSONObject(jsonForm, METADATA);
+            }else {
+                updateStartEndTime(metadata, getJSONObject(jsonForm, METADATA));
             }
 
             // add all the fields to the event while injecting a new variable for grouping
@@ -98,6 +109,39 @@ public class JsonFormUtils extends org.smartregister.util.JsonFormUtils {
         String derivedEncounterType = StringUtils.isBlank(encounterType) && jsonForm != null ? getString(jsonForm, ENCOUNTER_TYPE) : encounterType;
 
         return org.smartregister.util.JsonFormUtils.createEvent(fields, metadata, formTag(allSharedPreferences), entityId, derivedEncounterType, tableName);
+    }
+
+    private static void updateStartEndTime(JSONObject currentMetadata, JSONObject nextMetadata){
+
+        String currentStart = getValue(currentMetadata, START);
+        String currentEnd = getValue(currentMetadata, END);
+
+        String nextStartValue = getValue(nextMetadata, START);
+        String nextEndValue = getValue(nextMetadata, END);
+
+        if (getTimeValue(nextStartValue) < getTimeValue(currentStart)) {
+            try {
+                JSONObject startTimeObject = getJSONObject(nextMetadata, START);
+                currentMetadata.put(START, startTimeObject);
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+
+        if (getTimeValue(nextEndValue) > getTimeValue(currentEnd)){
+            try{
+                JSONObject endTimeObject = getJSONObject(nextMetadata, END);
+                currentMetadata.put(END, endTimeObject);
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+
+    }
+
+    private static long getTimeValue(String timeInString){
+        Date ldDate = DateUtil.getLocalDate(timeInString).toDate();
+        return ldDate.getTime();
     }
 
     public static Event prepareEvent(AllSharedPreferences allSharedPreferences, String entityId, String jsonString, String tableName) throws JSONException {
