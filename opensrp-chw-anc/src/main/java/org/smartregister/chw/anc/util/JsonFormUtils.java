@@ -31,6 +31,8 @@ import org.smartregister.repository.AllSharedPreferences;
 import org.smartregister.util.DateUtil;
 
 import java.text.MessageFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
@@ -143,9 +145,11 @@ public class JsonFormUtils extends org.smartregister.util.JsonFormUtils {
 
     }
 
-    private static long getTimeValue(String timeInString){
-        Date ldDate = DateUtil.getLocalDate(timeInString).toDate();
-        return ldDate.getTime();
+    private static long getTimeValue(String timeInString) throws ParseException {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date timeDate = simpleDateFormat.parse(timeInString);
+        assert timeDate != null;
+        return timeDate.getTime();
     }
 
     public static Event prepareEvent(AllSharedPreferences allSharedPreferences, String entityId, String jsonString, String tableName) throws JSONException {
