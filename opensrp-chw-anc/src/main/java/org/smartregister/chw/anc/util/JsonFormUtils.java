@@ -85,7 +85,8 @@ public class JsonFormUtils extends org.smartregister.util.JsonFormUtils {
             if (metadata == null) {
                 metadata = getJSONObject(jsonForm, METADATA);
             }else {
-                updateStartEndTime(metadata, getJSONObject(jsonForm, METADATA));
+                JSONObject nextObject = registrationFormParams.getMiddle();
+                updateStartEndTime(metadata, getJSONObject(nextObject, METADATA));
             }
 
             // add all the fields to the event while injecting a new variable for grouping
