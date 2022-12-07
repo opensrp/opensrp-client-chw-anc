@@ -113,28 +113,32 @@ public class JsonFormUtils extends org.smartregister.util.JsonFormUtils {
 
     private static void updateStartEndTime(JSONObject currentMetadata, JSONObject nextMetadata){
 
-        String currentStart = getValue(currentMetadata, START);
-        String currentEnd = getValue(currentMetadata, END);
+        try {
+            JSONObject currentStartObject = getJSONObject(currentMetadata, START);
+            String currentStart = getString(currentStartObject, VALUE);
 
-        String nextStartValue = getValue(nextMetadata, START);
-        String nextEndValue = getValue(nextMetadata, END);
+            JSONObject currentEndObject = getJSONObject(currentMetadata, END);
+            String currentEnd = getString(currentEndObject, VALUE);
 
-        if (getTimeValue(nextStartValue) < getTimeValue(currentStart)) {
-            try {
+            JSONObject nextStartObject = getJSONObject(nextMetadata, START);
+            String nextStartValue = getString(nextStartObject, VALUE);
+
+            JSONObject nextEndObject = getJSONObject(nextMetadata, END);
+            String nextEndValue = getString(nextEndObject, VALUE);
+
+            //Compare time and get the earliest start time
+            if (getTimeValue(nextStartValue) < getTimeValue(currentStart)) {
                 JSONObject startTimeObject = getJSONObject(nextMetadata, START);
                 currentMetadata.put(START, startTimeObject);
-            }catch (Exception e){
-                e.printStackTrace();
             }
-        }
 
-        if (getTimeValue(nextEndValue) > getTimeValue(currentEnd)){
-            try{
+            //Compare time and get the latest end time
+            if (getTimeValue(nextEndValue) > getTimeValue(currentEnd)){
                 JSONObject endTimeObject = getJSONObject(nextMetadata, END);
                 currentMetadata.put(END, endTimeObject);
-            }catch (Exception e){
-                e.printStackTrace();
             }
+        }catch (Exception e){
+            e.printStackTrace();
         }
 
     }
